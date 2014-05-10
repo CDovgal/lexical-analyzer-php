@@ -1,4 +1,7 @@
 1) Build GTest and place the libs to externals\gtest-1.7.0\bin\<platform>\$(Configuration), 
 	e.g. externals\gtest-1.7.0\bin\x64\Release
-2) Go to bin/<platform> directory and run:
+2) Go to bin directory and run:
 	cmake .. -DCMAKE_PREFIX_PATH="C:\qt\qt-5.2.1\qt-5.2.1_x64\qtbase" -G"Visual Studio 12 Win64"
+or
+	bin/<platform>
+	cmake ../.. -DCMAKE_PREFIX_PATH="C:\qt\qt-5.2.1\qt-5.2.1_x64\qtbase" -G"Visual Studio 12 Win64"
