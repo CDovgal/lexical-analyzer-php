@@ -43,8 +43,6 @@ add_executable(
 
 qt5_use_modules(${EXECUTABLE_NAME} Widgets)
 
-set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/Lexical_Analyzer/")
-
 install(TARGETS Lexical_Analyzer
     RUNTIME
     DESTINATION bin

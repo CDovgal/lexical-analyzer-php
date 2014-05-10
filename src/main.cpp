@@ -1,7 +1,13 @@
 #include "mainwindow.h"
 #include <QApplication>
 
+#ifdef __APPLE__ && __MACH__
+int main(int argc, char *argv[]) {
+#elif __WINDOWS__
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* argv[], int nShowCmd) {
+  int argc = 1;
+#endif
+    
   //QStringList paths = QCoreApplication::libraryPaths();
   //paths.append(".");
   //paths.append("platforms");
@@ -9,19 +15,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char* argv[]
   //paths.append("printsupport");
   //QCoreApplication::setLibraryPaths(paths);
 
-  int argc = 1;
   QApplication a(argc, argv);
   MainWindow w;
   w.show();
 
   return a.exec();
 }
-//
-//int main(int argc, char *argv[])
-//{
-//    QApplication a(argc, argv);
-//    MainWindow w;
-//    w.show();
-//
-//    return a.exec();
-//}

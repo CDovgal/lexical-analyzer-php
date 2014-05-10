@@ -1,2 +1,4 @@
 syntax: glob
 bin
+build
+.DS_Store
