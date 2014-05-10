@@ -1,0 +1,2 @@
+Go to build directory and run:
+cmake .. -DCMAKE_PREFIX_PATH="C:\qt\qt-5.2.1\qt-5.2.1_x64\qtbase" -G"Visual Studio 12 Win64"

@@ -15,21 +15,12 @@ LexicalAnalyzer::LexicalAnalyzer(const QString& i_php_source)
     , m_end(false)
 {
     m_source_lines = m_source_origin.split("\n");
-
-    next_token();
 }
 
-bool LexicalAnalyzer::isEnd() const
+bool LexicalAnalyzer::nextToken(Token& io_token)
 {
-    return m_end;
-}
-
-Token LexicalAnalyzer::nextToken()
-{
-    if(m_end)
-        return Token();
-
-    return next_token();
+  io_token = Token();
+  return true;
 }
 
 void LexicalAnalyzer::setSource(const QString& i_php_source)
@@ -42,13 +33,13 @@ void LexicalAnalyzer::setSource(const QString& i_php_source)
     m_current_line = 0;
 }
 
-Token LexicalAnalyzer::next_token()
-{
-    auto temp = trim_front(m_source_lines[m_current_line]);
-    m_current_pos += temp;
-
-    return Token();
-}
+//Token LexicalAnalyzer::next_token()
+//{
+//    auto temp = trim_front(m_source_lines[m_current_line]);
+//    m_current_pos += temp;
+//
+//    return Token();
+//}
 
 quint32 LexicalAnalyzer::trim_front(QString& i_str)
 {

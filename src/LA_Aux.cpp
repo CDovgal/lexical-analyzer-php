@@ -1,6 +1,30 @@
 #include "LA_Aux.h"
 #include <QVector>
 
+
+QString TokenToString(E_TOKEN_TYPE i_token_type)
+{
+  switch (i_token_type)
+  {
+  case E_TT_NONE:
+    return "None";
+  case E_TT_TAG:
+    return "Tag";
+  case E_TT_KEYWORD:
+    return "Keyword";
+  case E_TT_OPERATOR:
+    return "Operator";
+  case E_TT_DELIMITER:
+    return "Delimiter";
+  case E_TT_IDENTIFIER:
+    return "Identifier";
+  case E_TT_CONSTEXPR:
+    return "Const expession";
+  default:
+    return "Error.";
+  }
+}
+
 bool isTag(const QString& i_str)
 {
     static QVector<QString> tags;

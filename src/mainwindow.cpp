@@ -26,12 +26,11 @@ MainWindow::~MainWindow()
 void MainWindow::add_record(const Token& i_token)
 {
     ui->mp_result_table->setRowCount(ui->mp_result_table->rowCount() + 1);
-/*
-    ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 0, new QTableWidgetItem(i_token.token()));
-    ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 1, new QTableWidgetItem(i_token.lexem()));
-    ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 3, new QTableWidgetItem(i_token.row()));
-    ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 2, new QTableWidgetItem(i_token.column()));
-    */
+
+    ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 0, new QTableWidgetItem(TokenToString(i_token.m_token_type)));
+    ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 1, new QTableWidgetItem(i_token.m_lexem));
+    ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 3, new QTableWidgetItem(QString::number(i_token.m_row)));
+    ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 2, new QTableWidgetItem(QString::number(i_token.m_column)));
 }
 
 void MainWindow::load_source()
@@ -69,8 +68,9 @@ void MainWindow::on_mp_load_button_clicked()
 void MainWindow::on_mp_analize_button_clicked()
 {
     LexicalAnalyzer anal(ui->mp_source->toPlainText());
-    for(;!anal.isEnd();)
+    for (Token token; anal.nextToken(token);)
     {
-        add_record(anal.nextToken());
+      add_record(token);
+      return;
     }
 }

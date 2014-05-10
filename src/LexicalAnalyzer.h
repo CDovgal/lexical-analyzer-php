@@ -10,16 +10,14 @@ public:
     LexicalAnalyzer();
     LexicalAnalyzer(const QString& i_php_source);
 
-    bool isEnd() const;
-
-    Token nextToken();
+    bool nextToken(Token& io_token);
 
     void setSource(const QString& i_php_source);
 
     void reset();
 
 private:
-    Token next_token();
+    //Token next_token();
 
     quint32 trim_front(QString& i_str);
 
