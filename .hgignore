@@ -1,4 +1,3 @@
 syntax: glob
-bin
-build
-.DS_Store
+externals/gtest-1.7.0/bin
+php-interpreter/bin
