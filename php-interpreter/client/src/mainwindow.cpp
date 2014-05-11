@@ -5,6 +5,7 @@
 #include <QString>
 #include <QFile>
 
+#include "LA_Aux.h"
 #include "LexicalAnalyzer.h"
 
 MainWindow::MainWindow(QWidget *parent) :

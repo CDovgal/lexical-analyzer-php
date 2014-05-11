@@ -1,9 +1,22 @@
 #pragma once
 
 #include <QString>
-#include "LA_Aux.h"
 
-class Token
+#include "Aux_def.h"
+
+enum E_TOKEN_TYPE
+{
+  E_TT_NONE = 0,
+
+  E_TT_TAG,           // <?php, ?>
+  E_TT_KEYWORD,       // define, if, while, ...
+  E_TT_OPERATOR,      // +, - , =, ....
+  E_TT_DELIMITER,     // [, ), ., {, }, ...
+  E_TT_IDENTIFIER,    // $this, $var1, ...
+  E_TT_CONSTEXPR      // 1, "abc", true, ...
+};
+
+class PHP_LIB_API Token
 {
 public:
   Token()

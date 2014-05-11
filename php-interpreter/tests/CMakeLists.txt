@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
+cmake_policy(SET CMP0020 OLD)
 
 add_definitions(-D_VARIADIC_MAX=10)
 
-project(php_interpreter_tests)
-set(EXECUTABLE_NAME      php_interpreter_tests)
+project(PHP_tests)
+set(EXECUTABLE_NAME PHP_tests)
 
 if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
     MESSAGE( "64 bits compiler detected" )
@@ -16,13 +17,19 @@ else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
 include_directories(
-#    ${CMAKE_CURRENT_BINARY_DIR}
     include
     ../../externals/gtest-1.7.0/include
+	../lib/include
 )
+
+message(STATUS ${CMAKE_PREFIX_PATH})
+set(CMAKE_AUTOMOC ON)
+find_package(Qt5Widgets REQUIRED)
+
 
 link_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../../externals/gtest-1.7.0/bin/${EX_PLATFORM_NAME}/${CMAKE_BUILD_TYPE}
+	${CMAKE_CURRENT_SOURCE_DIR}/../lib/${Configuration}
 )
 
 file(
@@ -46,17 +53,17 @@ add_executable(
 
 target_link_libraries(
     ${EXECUTABLE_NAME}
+	PHP_lib
     gtest
 )
 
-# Install
+qt5_use_modules(${EXECUTABLE_NAME} Widgets)
 
-#install(TARGETS php_interpreter_tests
-#    RUNTIME
-#    DESTINATION bin
-#    COMPONENT Autotests)
+install(TARGETS ${EXECUTABLE_NAME}
+    RUNTIME
+    DESTINATION bin
+)
 
-#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/test_0.txt
-#    DESTINATION bin/Data
-#    COMPONENT Autotests
-#)
+install(FILES data/source.php
+    DESTINATION bin/Data
+)

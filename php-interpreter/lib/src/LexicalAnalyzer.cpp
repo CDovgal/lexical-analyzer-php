@@ -5,7 +5,7 @@
 LexicalAnalyzer::LexicalAnalyzer()
     : m_current_pos(0)
     , m_current_line(0)
-    , m_end(false)
+    , m_end(true)
 {}
 
 LexicalAnalyzer::LexicalAnalyzer(const QString& i_php_source)

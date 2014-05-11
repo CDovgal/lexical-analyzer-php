@@ -1,6 +1,6 @@
 #include "LA_Aux.h"
-#include <QVector>
 
+#include <QVector>
 
 QString TokenToString(E_TOKEN_TYPE i_token_type)
 {

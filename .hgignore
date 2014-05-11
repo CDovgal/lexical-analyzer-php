@@ -1,3 +1,5 @@
 syntax: glob
 externals/gtest-1.7.0/bin
 php-interpreter/bin
+externals/qt5runtime/x64
+externals/qt5runtime/x86

@@ -4,7 +4,9 @@
 #include <QVector>
 #include <Token.h>
 
-class LexicalAnalyzer
+#include "Aux_def.h"
+
+class PHP_LIB_API LexicalAnalyzer
 {
 public:
     LexicalAnalyzer();

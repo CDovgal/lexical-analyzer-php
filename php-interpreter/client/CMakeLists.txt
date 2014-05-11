@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8.9)
 cmake_policy(SET CMP0020 OLD)
 
-project(Lexical_Analyzer)
-set(EXECUTABLE_NAME Lexical_Analyzer)
+project(PHP_client)
+set(EXECUTABLE_NAME PHP_client)
 
 message(STATUS ${CMAKE_PREFIX_PATH})
 
@@ -15,18 +15,19 @@ find_package(Qt5Widgets REQUIRED)
 
 include_directories(
     src
+	../lib/include
 )
 
 # sources
 file(
-	GLOB 
+	GLOB
 	SEL_client_sources
 	src/*
 )
 
 # forms
 file(
-	GLOB 
+	GLOB
 	SEL_client_forms 
 	forms/*.ui
 )
@@ -43,27 +44,25 @@ add_executable(
 
 qt5_use_modules(${EXECUTABLE_NAME} Widgets)
 
-install(TARGETS Lexical_Analyzer
+add_dependencies(
+    ${EXECUTABLE_NAME}
+    PHP_lib
+)
+
+target_link_libraries(
+    ${EXECUTABLE_NAME}
+    PHP_lib
+)
+
+install(TARGETS ${EXECUTABLE_NAME}
     RUNTIME
     DESTINATION bin
-#    COMPONENT Applications
 )
 
 #install(DIRECTORY
 #    ${CMAKE_CURRENT_SOURCE_DIR}/../../../externals/qt5runtime/x86/${CMAKE_BUILD_TYPE}/imageformats
 #    ${CMAKE_CURRENT_SOURCE_DIR}/../../../externals/qt5runtime/x86/${CMAKE_BUILD_TYPE}/platforms
 #    ${CMAKE_CURRENT_SOURCE_DIR}/../../../externals/qt5runtime/x86/${CMAKE_BUILD_TYPE}/printsupport
-#    DESTINATION bin
-#    COMPONENT Applications
-#)
-
-#file(
-#	GLOB 
-#	qt5_runtime_root
-#	${CMAKE_CURRENT_SOURCE_DIR}/../../../externals/qt5runtime/x86/${CMAKE_BUILD_TYPE}/*.dll
-#)
-
-#install(FILES ${qt5_runtime_root}
 #    DESTINATION bin
 #    COMPONENT Applications
 #)

@@ -3,8 +3,18 @@ cmake_policy(SET CMP0020 OLD)
 
 project(php-interpreter)
 
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+    MESSAGE( "64 bits compiler detected" )
+    SET( EX_PLATFORM 64 )
+    SET( EX_PLATFORM_NAME "x64" )
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 ) 
+    MESSAGE( "32 bits compiler detected" )
+    SET( EX_PLATFORM 32 )
+    SET( EX_PLATFORM_NAME "x86" )
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
-add_subdirectory(lexical-analyzer)
+add_subdirectory(lib)
+add_subdirectory(client)
 add_subdirectory(tests)
 
 
