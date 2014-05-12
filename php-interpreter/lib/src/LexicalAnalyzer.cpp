@@ -20,7 +20,11 @@ LexicalAnalyzer::LexicalAnalyzer(const QString& i_php_source)
 bool LexicalAnalyzer::nextToken(Token& io_token)
 {
   io_token = Token();
-  return true;
+  static int i = -1;
+  if(++i == 10)
+    return false;
+  else
+    return true;
 }
 
 void LexicalAnalyzer::setSource(const QString& i_php_source)

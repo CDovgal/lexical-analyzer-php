@@ -2,9 +2,10 @@
 
 #include <QString>
 
+#include "Aux_def.h"
 #include "Token.h"
 
-QString TokenToString(E_TOKEN_TYPE i_token_type);
+PHP_LIB_API QString toString(E_TOKEN_TYPE i_token_type);
 
 bool isTag(const QString& i_str);
 

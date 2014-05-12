@@ -2,27 +2,31 @@
 
 #include <QVector>
 
-QString TokenToString(E_TOKEN_TYPE i_token_type)
+PHP_LIB_API QString toString(E_TOKEN_TYPE i_token_type)
 {
+  QString str;
+
   switch (i_token_type)
   {
   case E_TT_NONE:
-    return "None";
+    str = "None"; break;
   case E_TT_TAG:
-    return "Tag";
+    str = "Tag"; break;
   case E_TT_KEYWORD:
-    return "Keyword";
+    str = "Keyword"; break;
   case E_TT_OPERATOR:
-    return "Operator";
+    str = "Operator"; break;
   case E_TT_DELIMITER:
-    return "Delimiter";
+    str = "Delimiter"; break;
   case E_TT_IDENTIFIER:
-    return "Identifier";
+    str = "Identifier"; break;
   case E_TT_CONSTEXPR:
-    return "Const expession";
+    str = "Const expession"; break;
   default:
-    return "Error.";
+    str = "Error.";
   }
+
+  return str;
 }
 
 bool isTag(const QString& i_str)

@@ -28,7 +28,7 @@ find_package(Qt5Widgets REQUIRED)
 
 
 link_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../externals/gtest-1.7.0/bin/${EX_PLATFORM_NAME}/${CMAKE_BUILD_TYPE}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../externals/gtest-1.7.0/bin/${EX_PLATFORM_NAME}/${BUILD_TYPE}
 	${CMAKE_CURRENT_SOURCE_DIR}/../lib/${Configuration}
 )
 
@@ -61,9 +61,9 @@ qt5_use_modules(${EXECUTABLE_NAME} Widgets)
 
 install(TARGETS ${EXECUTABLE_NAME}
     RUNTIME
-    DESTINATION bin
+    DESTINATION bin/${CMAKE_BUILD_TYPE}
 )
 
-install(FILES data/source.php
-    DESTINATION bin/Data
+install(FILES Data/source.php
+    DESTINATION bin/${CMAKE_BUILD_TYPE}/Data
 )

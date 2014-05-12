@@ -4,6 +4,8 @@
 
 #include "Aux_def.h"
 
+#include <iostream>
+
 enum E_TOKEN_TYPE
 {
   E_TT_NONE = 0,
@@ -21,6 +23,9 @@ class PHP_LIB_API Token
 public:
   Token()
     : m_token_type(E_TT_NONE)
+    , m_lexem("no_lexem")
+    , m_row(-1)
+    , m_column(-1)
   {}
 
   Token(E_TOKEN_TYPE i_token_type, const QString& i_lexem,
@@ -37,3 +42,11 @@ public:
   int m_row;
   int m_column;
 };
+
+PHP_LIB_API std::ostream& operator<<(std::ostream& i_stream, E_TOKEN_TYPE i_token_type);
+
+PHP_LIB_API std::ostream& operator<<(std::ostream& i_stream, const Token& i_token_type);
+
+PHP_LIB_API bool operator==(const Token& lhv, const Token& rhv);
+
+PHP_LIB_API bool operator!=(const Token& lhv, const Token& rhv);

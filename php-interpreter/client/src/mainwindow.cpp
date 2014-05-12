@@ -28,7 +28,7 @@ void MainWindow::add_record(const Token& i_token)
 {
     ui->mp_result_table->setRowCount(ui->mp_result_table->rowCount() + 1);
 
-    ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 0, new QTableWidgetItem(TokenToString(i_token.m_token_type)));
+    ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 0, new QTableWidgetItem(toString(i_token.m_token_type)));
     ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 1, new QTableWidgetItem(i_token.m_lexem));
     ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 3, new QTableWidgetItem(QString::number(i_token.m_row)));
     ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 2, new QTableWidgetItem(QString::number(i_token.m_column)));

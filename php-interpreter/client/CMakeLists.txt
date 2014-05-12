@@ -56,7 +56,7 @@ target_link_libraries(
 
 install(TARGETS ${EXECUTABLE_NAME}
     RUNTIME
-    DESTINATION bin
+    DESTINATION bin/${CMAKE_BUILD_TYPE}
 )
 
 #install(DIRECTORY

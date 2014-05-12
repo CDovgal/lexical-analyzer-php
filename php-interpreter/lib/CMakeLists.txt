@@ -15,7 +15,6 @@ include_directories(
     include
 )
 
-# sources
 file(
 	GLOB 
 	PHP_Lib_sources
@@ -39,7 +38,7 @@ qt5_use_modules(${PHP_LIB_NAME} Widgets)
 
 install(TARGETS ${PHP_LIB_NAME}
     RUNTIME
-    DESTINATION bin
+    DESTINATION bin/${CMAKE_BUILD_TYPE}
 )
 
 file(
@@ -49,6 +48,5 @@ file(
 )
 
 install(FILES ${qt5_runtime_root}
-    DESTINATION bin
-    COMPONENT Applications
+    DESTINATION bin/${CMAKE_BUILD_TYPE}
 )
