@@ -10,6 +10,8 @@ enum E_TOKEN_TYPE
 {
   E_TT_NONE = 0,
 
+  E_TT_ERROR,         // sdf01
+
   E_TT_TAG,           // <?php, ?>
   E_TT_KEYWORD,       // define, if, while, ...
   E_TT_OPERATOR,      // +, - , =, ....
