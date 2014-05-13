@@ -7,11 +7,11 @@
  */
 
 #include <gtest\gtest.h>
-
+#include <thread>
 int main(int argc, char* argv[]) {
 
   ::testing::InitGoogleTest(&argc, argv);
-
+  //std::this_thread::sleep_for(std::chrono::seconds(10));
   //::testing::AddGlobalTestEnvironment( new SELEnvironment );
   return RUN_ALL_TESTS();
 }

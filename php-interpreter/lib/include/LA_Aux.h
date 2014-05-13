@@ -23,3 +23,5 @@ PHP_LIB_API bool isOperator(const QString& i_str);
 
 PHP_LIB_API bool isConstExpr(const QString& i_str);
 PHP_LIB_API bool isIdentifier(const QString& i_str);
+
+
