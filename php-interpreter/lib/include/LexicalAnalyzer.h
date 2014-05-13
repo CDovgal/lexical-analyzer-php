@@ -23,7 +23,7 @@ public:
 private:
     Token next_token();
 
-    quint32 trim_front(QString& i_str);
+    int trim_front(QString& i_str);
 
     int next_pos(const QString& i_str);
 

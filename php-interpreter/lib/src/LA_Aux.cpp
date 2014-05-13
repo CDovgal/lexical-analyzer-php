@@ -335,12 +335,3 @@ PHP_LIB_API const QVector<QString>& elements()
   return ELEMENTS;
 }
 
-PHP_LIB_API int trim_front(QString& i_str)
-{
-  int count = 0;
-
-  for( ;i_str[0].isSpace(); ++count);    
-
-  i_str.remove(0, count);
-  return count;
-}

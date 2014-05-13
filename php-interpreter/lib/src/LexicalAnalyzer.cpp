@@ -1,5 +1,7 @@
 #include "LexicalAnalyzer.h"
 
+#include "LA_Aux.h"
+
 #include <QVector>
 
 enum E_STATE : int
@@ -101,7 +103,17 @@ Token LexicalAnalyzer::next_token()
 
   if(symbol.isLetter())
   {
-    // keyword
+    for (auto& keyword : keywords())
+    {
+      auto pos = m_source_lines[m_current_line].indexOf(keyword);
+      
+      m_current_pos += keyword.length();
+      QString lexem = m_source_lines[m_current_line].left(keyword.length());
+      m_source_lines[m_current_line] = m_source_lines[m_current_line].right(keyword.length());
+
+      return Token(E_TT_KEYWORD, lexem, m_current_line, m_current_pos);
+    }
+    // here error
   }
 
   //if(symbol.isNumber() || symbol == '"' || symbol == '')
@@ -122,11 +134,12 @@ QString LexicalAnalyzer::eat_keyword(QString& i_str)
 	return "";
 }
 
-quint32 LexicalAnalyzer::trim_front(QString& i_str)
+int LexicalAnalyzer::trim_front(QString& i_str)
 {
   int i = -1;
 
-  for( ;i_str[++i].isSpace(); );
+  for (; i_str[++i].isSpace();){};
+
   i_str.remove(0, i);
 
   return i;
