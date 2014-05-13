@@ -25,6 +25,10 @@ private:
 
     quint32 trim_front(QString& i_str);
 
+    int next_pos(const QString& i_str);
+
+    QString eat_keyword(QString& i_str);
+
     QString m_source_origin;
 
     QStringList m_source_lines;
