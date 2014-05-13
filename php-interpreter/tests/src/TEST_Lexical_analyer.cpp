@@ -45,7 +45,8 @@ TEST(Lexical_analyzer, test_interface)
   for(Token temp; analyzer.nextToken(temp); )
     actual_tokens.push_back(temp);
 
-  ASSERT_EQ(expected_tokens.size(), actual_tokens.size());
+  ASSERT_EQ(expected_tokens.size(), actual_tokens.size())
+    << "Mismatch of expected number of tokens and actual result";
 
   std::equal(expected_tokens.cbegin(), expected_tokens.cend(), 
               actual_tokens.cbegin(), [] (const Token& expected_token, const Token& actual_token) -> bool
