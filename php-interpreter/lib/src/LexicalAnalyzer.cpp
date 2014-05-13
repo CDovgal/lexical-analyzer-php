@@ -54,7 +54,10 @@ Token LexicalAnalyzer::next_token()
       if(m_current_pos == -1)
         curr_pos = 0;
       else
+      {
+        m_current_pos = curr_pos;
         break;
+      }
     }
     m_state = E_STATE_CODE;
     return Token(E_TT_TAG, "<?php", m_current_line, m_current_pos);
@@ -65,17 +68,58 @@ Token LexicalAnalyzer::next_token()
     for(int curr_pos = m_current_pos; curr_pos = m_source_lines[m_current_line].indexOf("*/", curr_pos == -1 ? 0 : curr_pos); m_current_line++)
     {
       if(m_current_pos != -1)
+      {
+        m_current_pos = curr_pos;
         break;
+      }
     }
-    m_state = E_STATE_CODE;
+    m_state = E_STATE_CODE;    
     return Token(E_TT_COMMENT, "*/", m_current_line, m_current_pos);
   }
 
-  return Token();
-  auto temp = trim_front(m_source_lines[m_current_line]);
-  m_current_pos += temp;
+  for(;;)
+  {
+    m_current_pos += trim_front(m_source_lines[m_current_line]);
+    if(0 == m_source_lines[m_current_line].length())
+    {
+      ++m_current_line;
+      m_current_pos = 0;
+    }
+  }
+
+  if(m_source_lines[m_current_line][m_current_pos] == '$')
+  {
+    int space = m_source_lines[m_current_line].indexOf(" ");
+    QString lexem = m_source_lines[m_current_line].left(space);
+    m_current_pos += space;
+    m_source_lines[m_current_line] = m_source_lines[m_current_line].right(space);
+
+    return Token(E_TT_IDENTIFIER, lexem, m_current_line, m_current_pos);
+  }
+
+  auto symbol = m_source_lines[m_current_line][m_current_pos];
+
+  if(symbol.isLetter())
+  {
+    // keyword
+  }
+
+  //if(symbol.isNumber() || symbol == '"' || symbol == '')
+  //{
+  //  // const expr
+  //}
 
   return Token();
+}
+
+int next_pos(const QString& i_str)
+{
+	return 0;
+}
+
+QString LexicalAnalyzer::eat_keyword(QString& i_str)
+{
+	return "";
 }
 
 quint32 LexicalAnalyzer::trim_front(QString& i_str)

@@ -15,7 +15,7 @@
 
 TEST(Lexical_analyzer, test_interface)
 {
-  QString source_path("E:\\Data\\source.txt");
+  QString source_path(".\\Data\\source.php");
   QFile source_file(source_path);
   if(!source_file.open(QIODevice::ReadOnly | QIODevice::Text))
   {
