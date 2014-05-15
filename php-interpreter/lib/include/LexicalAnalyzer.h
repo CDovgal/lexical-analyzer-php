@@ -2,8 +2,8 @@
 
 #include <QStringList>
 #include <QVector>
-#include <Token.h>
 
+#include "Token.h"
 #include "Aux_def.h"
 
 enum E_STATE : int;
@@ -27,7 +27,13 @@ private:
 
     int next_pos(const QString& i_str);
 
+    bool shift_from_current(const QString& i_str);
+
     QString eat_keyword(QString& i_str);
+
+    QChar current_symbol() const;
+
+    int increase_pos(int i_pos);
 
     QString m_source_origin;
 
