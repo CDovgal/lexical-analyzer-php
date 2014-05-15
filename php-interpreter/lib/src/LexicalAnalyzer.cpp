@@ -11,22 +11,24 @@ enum E_STATE : int
   E_STATE_CODE,
 
   E_STATE_OUT_OF_TAG,
-  E_STATE_COMMENT
+  E_STATE_COMMENT,
+
+  E_STATE_FINISHED
 };
 
 LexicalAnalyzer::LexicalAnalyzer()
-  : m_current_pos(0)
-  , m_current_line(0)
-  , m_end(false)
-  , m_state(E_STATE_OUT_OF_TAG)
+: m_current_pos(0)
+, m_current_line(0)
+, m_end(false)
+, m_state(E_STATE_NOT_INIT)
 {}
 
 LexicalAnalyzer::LexicalAnalyzer(const QString& i_php_source)
-  : m_source_origin(i_php_source)
-  , m_current_pos(0)
-  , m_current_line(0)
-  , m_end(false)
-  , m_state(E_STATE_OUT_OF_TAG)
+: m_source_origin(i_php_source)
+, m_current_pos(0)
+, m_current_line(0)
+, m_end(false)
+, m_state(E_STATE_OUT_OF_TAG)
 {
   m_source_lines = m_source_origin.split("\n");
 }
@@ -34,7 +36,7 @@ LexicalAnalyzer::LexicalAnalyzer(const QString& i_php_source)
 bool LexicalAnalyzer::nextToken(Token& io_token)
 {
   io_token = next_token();
-  return io_token.m_token_type != E_TT_NONE;
+  return m_state != E_STATE_FINISHED;
 }
 
 void LexicalAnalyzer::setSource(const QString& i_php_source)
@@ -49,89 +51,135 @@ void LexicalAnalyzer::setSource(const QString& i_php_source)
 
 Token LexicalAnalyzer::next_token()
 {
-  if(m_state == E_STATE_OUT_OF_TAG) 
-  {
-    for(int curr_pos = m_current_pos; curr_pos = m_source_lines[m_current_line].indexOf("<?php", curr_pos); m_current_line++)
-    {
-      if(m_current_pos == -1)
-        curr_pos = 0;
-      else
-      {
-        m_current_pos = curr_pos;
-        break;
-      }
-    }
-    m_state = E_STATE_CODE;
-    return Token(E_TT_TAG, "<?php", m_current_line, m_current_pos);
-  }
+  if (m_state == E_STATE_NOT_INIT || m_state == E_STATE_FINISHED)
+    return Token();
 
-  if(m_state == E_STATE_COMMENT)
+  if (m_state == E_STATE_OUT_OF_TAG)
   {
-    for(int curr_pos = m_current_pos; curr_pos = m_source_lines[m_current_line].indexOf("*/", curr_pos == -1 ? 0 : curr_pos); m_current_line++)
+    if (shift_from_current(TAG_OPEN))
     {
-      if(m_current_pos != -1)
-      {
-        m_current_pos = curr_pos;
-        break;
-      }
+      m_state = E_STATE_CODE;
+      return Token(E_TT_TAG, TAG_OPEN, m_current_line, m_current_pos);
     }
-    m_state = E_STATE_CODE;    
-    return Token(E_TT_COMMENT, "*/", m_current_line, m_current_pos);
-  }
-
-  for(;;)
-  {
-    m_current_pos += trim_front(m_source_lines[m_current_line]);
-    if(0 == m_source_lines[m_current_line].length())
+    else
     {
-      ++m_current_line;
-      m_current_pos = 0;
+      m_state = E_STATE_FINISHED;
+      return Token();
     }
   }
 
-  if(m_source_lines[m_current_line][m_current_pos] == '$')
+  QString str = m_source_lines[m_current_line].mid(m_current_pos, 2);
+  if (str == TAG_CLOSE)
   {
-    int space = m_source_lines[m_current_line].indexOf(" ");
-    QString lexem = m_source_lines[m_current_line].left(space);
-    m_current_pos += space;
-    m_source_lines[m_current_line] = m_source_lines[m_current_line].right(space);
-
-    return Token(E_TT_IDENTIFIER, lexem, m_current_line, m_current_pos);
+    increase_pos(2);
+    m_state = E_STATE_OUT_OF_TAG;
+    return Token(E_TT_TAG, TAG_CLOSE, m_current_line, m_current_pos);
   }
 
-  auto symbol = m_source_lines[m_current_line][m_current_pos];
+  if (str == COMMENT_OPEN)
+  {
+    increase_pos(2);
+    m_state = E_STATE_COMMENT;
+    return Token(E_TT_COMMENT, COMMENT_OPEN, m_current_line, m_current_pos);
+  }
 
-  if(symbol.isLetter())
+  if (m_state == E_STATE_COMMENT)
+  {
+    if (shift_from_current(COMMENT_END))
+    {
+      m_state = E_STATE_CODE;
+      return Token(E_TT_COMMENT, COMMENT_END, m_current_line, m_current_pos);
+    }
+    else
+    {
+      m_state = E_STATE_FINISHED;
+      return Token();
+    }
+  }
+
+  if (current_symbol() == '$')
+  {
+    int temp_curr_pos = m_current_pos;
+    int temp_curr_line = m_current_line;
+
+    int var_start = increase_pos(1) - 1;
+
+    if ((current_symbol().isLetter() || current_symbol() == '_') && increase_pos(1))
+    {
+      for (; current_symbol().isLetterOrNumber() || current_symbol() == '_'; increase_pos(1));
+    }
+
+    if (m_current_line - temp_curr_line != 0)
+    {
+      temp_curr_pos = m_source_lines[temp_curr_line].length();
+    }
+    else
+    {
+      temp_curr_pos = m_current_pos;
+    }
+
+    QString var_str = m_source_lines[temp_curr_line].mid(var_start, temp_curr_pos - var_start);
+    if (var_str.length() > 1)
+    {
+      return Token(E_TT_IDENTIFIER, var_str, temp_curr_line, var_start);
+    }
+    else
+    {
+      return Token(E_TT_ERROR, var_str, temp_curr_line, temp_curr_pos);
+    }
+  }
+
+  if (current_symbol().isLower())
   {
     for (auto& keyword : keywords())
     {
-      auto pos = m_source_lines[m_current_line].indexOf(keyword);
-      
-      m_current_pos += keyword.length();
-      QString lexem = m_source_lines[m_current_line].left(keyword.length());
-      m_source_lines[m_current_line] = m_source_lines[m_current_line].right(keyword.length());
-
-      return Token(E_TT_KEYWORD, lexem, m_current_line, m_current_pos);
+      if (-1 != m_source_lines[m_current_line].indexOf(keyword, m_current_pos))
+      {
+        if (m_current_pos != m_source_lines[m_current_line].length())
+        {
+          increase_pos(keyword.length());
+          return Token(E_TT_KEYWORD, keyword, m_current_line, m_current_pos);
+        }
+      }
     }
-    // here error
   }
 
-  //if(symbol.isNumber() || symbol == '"' || symbol == '')
-  //{
-  //  // const expr
-  //}
+  for (auto& keyword : brackents())
+  {
+    if (-1 != m_source_lines[m_current_line].indexOf(keyword, m_current_pos))
+    {
+      if (m_current_pos != m_source_lines[m_current_line].length())
+      {
+        increase_pos(keyword.length());
+        return Token(E_TT_DELIMITER, keyword, m_current_line, m_current_pos);
+      }
+    }
+  }
 
-  return Token();
+
+  for (auto& keyword : operators())
+  {
+    if (-1 != m_source_lines[m_current_line].indexOf(keyword, m_current_pos))
+    {
+      if (m_current_pos != m_source_lines[m_current_line].length())
+      {
+        increase_pos(keyword.length());
+        return Token(E_TT_OPERATOR, keyword, m_current_line, m_current_pos);
+      }
+    }
+  }
+
+  return Token(E_TT_ERROR, "wft", m_current_line, m_current_pos);
 }
 
 int next_pos(const QString& i_str)
 {
-	return 0;
+  return 0;
 }
 
 QString LexicalAnalyzer::eat_keyword(QString& i_str)
 {
-	return "";
+  return "";
 }
 
 int LexicalAnalyzer::trim_front(QString& i_str)
@@ -150,16 +198,60 @@ QStringList split(QString i_line)
   QVector<QString> operators;
   //    = {"(", ")", "[", "]", ":", ";", "//", "/", "\"", "!", ".", "<=", ">", ">=", "==", "!=", "===", "!==", "<>", "<" , "&&", "||", "=", "+=", "-=", "*=", "/=", "%=", "*", "/", "%", "+", "-", "and", "xor", "or"};
 
-  for(int i = 0; i < i_line.size() - 1; ++i)
+  for (int i = 0; i < i_line.size() - 1; ++i)
   {
     int pos1 = operators.indexOf(QString(i_line[i]));
 
-    if(pos1 == -1)
+    if (pos1 == -1)
       continue;
 
-    if(i_line[i + operators[pos1].length()] != ' ')
+    if (i_line[i + operators[pos1].length()] != ' ')
       i_line.insert(i + operators[pos1].length(), ' ');
   }
 
   return i_line.split(" ");
+}
+
+bool LexicalAnalyzer::shift_from_current(const QString& i_str)
+{
+  for (;
+    m_current_line < m_source_lines.length();
+    ++m_current_line, ++m_current_pos)
+  {
+    m_current_pos = m_source_lines[m_current_line].indexOf(i_str, m_current_pos);
+
+    if (m_current_pos != -1)
+    {
+      increase_pos(i_str.length());
+      return true;
+    }
+  }
+
+  return false;
+}
+
+QChar LexicalAnalyzer::current_symbol() const
+{
+  return m_source_lines[m_current_line][m_current_pos];
+}
+
+int LexicalAnalyzer::increase_pos(int i_pos)
+{
+  m_current_pos += i_pos;
+
+  if (m_source_lines[m_current_line].length() < m_current_pos)
+  {
+    Q_ASSERT(false);
+  }
+
+  if (m_source_lines[m_current_line].length() == m_current_pos)
+  {
+    ++m_current_line;
+    m_current_pos = 0;
+  }
+
+  if (m_current_line == m_source_lines.length() && m_current_pos == m_source_lines[m_current_line].length())
+    m_state = E_STATE_FINISHED;
+
+  return m_current_pos;
 }

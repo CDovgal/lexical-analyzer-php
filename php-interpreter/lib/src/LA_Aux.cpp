@@ -2,120 +2,92 @@
 
 #include <QVector>
 
-PHP_LIB_API QString toString(E_TOKEN_TYPE i_token_type)
-{
-  QString str;
-
-  switch (i_token_type)
-  {
-  case E_TT_NONE:
-    str = "None"; break;
-  case E_TT_TAG:
-    str = "Tag"; break;
-  case E_TT_KEYWORD:
-    str = "Keyword"; break;
-  case E_TT_OPERATOR:
-    str = "Operator"; break;
-  case E_TT_DELIMITER:
-    str = "Delimiter"; break;
-  case E_TT_IDENTIFIER:
-    str = "Identifier"; break;
-  case E_TT_CONSTEXPR:
-    str = "Const expession"; break;
-  case E_TT_COMMENT:
-    str = "Comment"; break;
-  default:
-    str = "Error.";
-  }
-
-  return str;
-}
-
 /////////////////////////////////////////////
 // TAGS
-QString TAG_OPEN  = "<?php";
+QString TAG_OPEN = "<?php";
 QString TAG_CLOSE = "?>";
 /////////////////////////////////////////////
 
 ////////////////////////////////////////////
 // COMMENTS
-QString COMMENT_LINE  = "//";
-QString COMMENT_OPEN  = "/*";
-QString COMMENT_END   = "*/";
+QString COMMENT_LINE = "//";
+QString COMMENT_OPEN = "/*";
+QString COMMENT_END = "*/";
 ////////////////////////////////////////////
 
 ////////////////////////////////////////////
 // BRACKETS
-QString BRACKET_ROUND_OPEN    = "(";
-QString BRACKET_ROUND_CLOSE   = ")";
-QString BRACKET_SQUARE_OPEN   = "[";
-QString BRACKET_SQUARE_CLOSE  = "(";
-QString BRACKET_FIGURE_OPEN   = "{";
-QString BRACKET_FIGURE_CLOSE  = "}";
+QString BRACKET_ROUND_OPEN = "(";
+QString BRACKET_ROUND_CLOSE = ")";
+QString BRACKET_SQUARE_OPEN = "[";
+QString BRACKET_SQUARE_CLOSE = "(";
+QString BRACKET_FIGURE_OPEN = "{";
+QString BRACKET_FIGURE_CLOSE = "}";
 ////////////////////////////////////////////
 
 /////////////////////////////////////////////
 // KEYWORDS
-QString KEYWORD_DEFINE      = "define";
-QString KEYWORD_INCLUDE     = "include";
-QString KEYWORD_NULL        = "NULL";
-QString KEYWORD_FUNCTION    = "function";
-QString KEYWORD_CONST       = "const";
-QString KEYWORD_RETURN      = "return";
-QString KEYWORD_FOR         = "for";
-QString KEYWORD_CONTINUE    = "continue";
-QString KEYWORD_BREAK       = "break";
-QString KEYWORD_IF          = "if";
-QString KEYWORD_ELSE        = "else";
-QString KEYWORD_ELSE_IF     = "elseif";
-QString KEYWORD_SWICTH      = "switch";
-QString KEYWORD_CASE        = "case";
-QString KEYWORD_DEFAULT     = "default";
-QString KEYWORD_ENDSWITCH   = "endswitch";
-QString KEYWORD_ECHO        = "echo";
+QString KEYWORD_DEFINE = "define";
+QString KEYWORD_INCLUDE = "include";
+QString KEYWORD_NULL = "NULL";
+QString KEYWORD_FUNCTION = "function";
+QString KEYWORD_CONST = "const";
+QString KEYWORD_RETURN = "return";
+QString KEYWORD_FOR = "for";
+QString KEYWORD_CONTINUE = "continue";
+QString KEYWORD_BREAK = "break";
+QString KEYWORD_IF = "if";
+QString KEYWORD_ELSE_IF = "elseif";
+QString KEYWORD_ELSE = "else";
+QString KEYWORD_SWICTH = "switch";
+QString KEYWORD_CASE = "case";
+QString KEYWORD_DEFAULT = "default";
+QString KEYWORD_ENDSWITCH = "endswitch";
+QString KEYWORD_ECHO = "echo";
 ////////////////////////////////////////////
 
 ////////////////////////////////////////////
 // OPERATORS
-QString OPERATOR_LOGICAL_AND          = "and";
-QString OPERATOR_LOGICAL_XOR          = "xor";
-QString OPERATOR_IDENTICAL            = "==="; 
-QString OPERATOR_NOT_IDENTICAL        = "!==";
-QString OPERATOR_LOGICAL_OR           = "or";
-QString OPERATOR_EQUAL                = "==";
-QString OPERATOR_NOT_EQUAL_           = "!=";
-QString OPERATOR_NOT_EQUAL_BRACKET    = "<>";
-QString OPERATOR_AND                  = "&&";
-QString OPERATOR_OR                   = "||";
-QString OPERATOR_SHIFT_LEFT           = "<<";
-QString OPERATOR_SHIFT_RIGHT          = ">>";
-QString OPERATOR_LESS_OR_EQUAL        = "<=";
-QString OPERATOR_GREATER_OR_EQUAL     = ">=";
-QString OPERATOR_INCREMENT            = "++";
-QString OPERATOR_DECREMENT            = "--";
-QString OPERATOR_ASSIGNMENT_PLUS      = "+=";
-QString OPERATOR_ASSIGNMENT_MINUS     = "-=";
-QString OPERATOR_ASSIGNMENT_MULTIPLY  = "*=";
-QString OPERATOR_ASSIGNMENT_DIVISION  = "/=";
-QString OPERATOR_ASSIGNMENT_MOD2      = "%=";
-QString OPERATOR_NOT                  = "!";
-QString OPERATOR_ASSIGNMENT           = "=";
-QString OPERATOR_PLUS                 = "+";
-QString OPERATOR_MINUS                = "-";
-QString OPERATOR_MULTIPLY             = "*";
-QString OPERATOR_DIVISION             = "/";
-QString OPERATOR_PERCENTAGE           = "%";
-QString OPERATOR_BIT_AND              = "&";
-QString OPERATOR_BIT_OR               = "|";
-QString OPERATOR_BIT_XOR              = "^";
-QString OPERATOR_BIT_NOT              = "~";
-QString OPERATOR_LESS                 = "<";
-QString OPERATOR_GREATER              = ">";
-QString OPERATOR_DOT                  = ".";
-QString OPERATOR_COMA                 = ",";
-QString OPERATOR_TERNARY_QUESTION     = "?";
-QString OPERATOR_TERNARY_DOUBLE_DOT   = ":";
+QString OPERATOR_LOGICAL_AND = "and";
+QString OPERATOR_LOGICAL_XOR = "xor";
+QString OPERATOR_IDENTICAL = "===";
+QString OPERATOR_NOT_IDENTICAL = "!==";
+QString OPERATOR_LOGICAL_OR = "or";
+QString OPERATOR_EQUAL = "==";
+QString OPERATOR_NOT_EQUAL_ = "!=";
+QString OPERATOR_NOT_EQUAL_BRACKET = "<>";
+QString OPERATOR_AND = "&&";
+QString OPERATOR_OR = "||";
+QString OPERATOR_SHIFT_LEFT = "<<";
+QString OPERATOR_SHIFT_RIGHT = ">>";
+QString OPERATOR_LESS_OR_EQUAL = "<=";
+QString OPERATOR_GREATER_OR_EQUAL = ">=";
+QString OPERATOR_INCREMENT = "++";
+QString OPERATOR_DECREMENT = "--";
+QString OPERATOR_ASSIGNMENT_PLUS = "+=";
+QString OPERATOR_ASSIGNMENT_MINUS = "-=";
+QString OPERATOR_ASSIGNMENT_MULTIPLY = "*=";
+QString OPERATOR_ASSIGNMENT_DIVISION = "/=";
+QString OPERATOR_ASSIGNMENT_MOD2 = "%=";
+QString OPERATOR_NOT = "!";
+QString OPERATOR_ASSIGNMENT = "=";
+QString OPERATOR_PLUS = "+";
+QString OPERATOR_MINUS = "-";
+QString OPERATOR_MULTIPLY = "*";
+QString OPERATOR_DIVISION = "/";
+QString OPERATOR_PERCENTAGE = "%";
+QString OPERATOR_BIT_AND = "&";
+QString OPERATOR_BIT_OR = "|";
+QString OPERATOR_BIT_XOR = "^";
+QString OPERATOR_BIT_NOT = "~";
+QString OPERATOR_LESS = "<";
+QString OPERATOR_GREATER = ">";
+QString OPERATOR_DOT = ".";
+QString OPERATOR_COMA = ",";
+QString OPERATOR_TERNARY_QUESTION = "?";
+QString OPERATOR_TERNARY_DOUBLE_DOT = ":";
 ////////////////////////////////////////////
+
 
 static QVector<QString> TAGS = {
     TAG_OPEN
@@ -315,7 +287,7 @@ PHP_LIB_API const QVector<QString>& comments()
   return COMMENTS;
 }
 
-PHP_LIB_API const QVector<QString>& brackents()
+PHP_LIB_API const QVector<QString>& brackets()
 {
   return BRACKETS;
 }

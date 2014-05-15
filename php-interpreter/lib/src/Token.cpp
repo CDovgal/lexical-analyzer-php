@@ -40,3 +40,32 @@ PHP_LIB_API bool operator!=(const Token& lhv, const Token& rhv)
 {
   return !(lhv == rhv);
 }
+
+PHP_LIB_API QString toString(E_TOKEN_TYPE i_token_type)
+{
+  QString str;
+
+  switch (i_token_type)
+  {
+  case E_TT_NONE:
+    str = "None"; break;
+  case E_TT_TAG:
+    str = "Tag"; break;
+  case E_TT_KEYWORD:
+    str = "Keyword"; break;
+  case E_TT_OPERATOR:
+    str = "Operator"; break;
+  case E_TT_DELIMITER:
+    str = "Delimiter"; break;
+  case E_TT_IDENTIFIER:
+    str = "Identifier"; break;
+  case E_TT_CONSTEXPR:
+    str = "Const expession"; break;
+  case E_TT_COMMENT:
+    str = "Comment"; break;
+  default:
+    str = "Error.";
+  }
+
+  return str;
+}

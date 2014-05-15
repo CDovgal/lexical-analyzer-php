@@ -40,6 +40,10 @@
           </property>
           <property name="plainText">
            <string>&lt;?php
+$abc
+$1abc
+$a_a
+$
 if ($a &gt; $b)
   echo &quot;a bigger than b&quot;;
 ?&gt;</string>
@@ -56,7 +60,7 @@ if ($a &gt; $b)
         <item row="2" column="1" colspan="2">
          <widget class="QLineEdit" name="mp_sourcefile_path">
           <property name="text">
-           <string>/Users/dovgalkostiantyn/projects/Lexical_analyser/source.php</string>
+           <string>.\Data\source.php</string>
           </property>
          </widget>
         </item>

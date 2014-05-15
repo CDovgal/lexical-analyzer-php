@@ -53,3 +53,5 @@ PHP_LIB_API std::ostream& operator<<(std::ostream& i_stream, const Token& i_toke
 PHP_LIB_API bool operator==(const Token& lhv, const Token& rhv);
 
 PHP_LIB_API bool operator!=(const Token& lhv, const Token& rhv);
+
+PHP_LIB_API QString toString(E_TOKEN_TYPE i_token_type);
