@@ -22,6 +22,11 @@ PHP_LIB_API bool isConstExpr(const QString& i_str);
 PHP_LIB_API bool isIdentifier(const QString& i_str);
  
 /////////////////////////////////////////////
+// SEMICOLON
+extern QString SEMICOLON;
+/////////////////////////////////////////////
+
+/////////////////////////////////////////////
 // TAGS
 extern QString TAG_OPEN;
 extern QString TAG_CLOSE;
@@ -76,7 +81,7 @@ extern QString OPERATOR_EQUAL;
 extern QString OPERATOR_NOT_EQUAL_;
 extern QString OPERATOR_NOT_EQUAL_BRACKET;
 extern QString OPERATOR_AND;
-extern QString OPERATOR_OR ;
+extern QString OPERATOR_OR;
 extern QString OPERATOR_SHIFT_LEFT;
 extern QString OPERATOR_SHIFT_RIGHT;
 extern QString OPERATOR_LESS_OR_EQUAL;

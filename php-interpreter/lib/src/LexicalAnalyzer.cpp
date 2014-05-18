@@ -17,18 +17,18 @@ enum E_STATE : int
 };
 
 LexicalAnalyzer::LexicalAnalyzer()
-: m_current_pos(0)
-, m_current_line(0)
-, m_end(false)
-, m_state(E_STATE_NOT_INIT)
+  : m_current_pos(0)
+  , m_current_line(0)
+  , m_end(false)
+  , m_state(E_STATE_NOT_INIT)
 {}
 
 LexicalAnalyzer::LexicalAnalyzer(const QString& i_php_source)
-: m_source_origin(i_php_source)
-, m_current_pos(0)
-, m_current_line(0)
-, m_end(false)
-, m_state(E_STATE_OUT_OF_TAG)
+  : m_source_origin(i_php_source)
+  , m_current_pos(0)
+  , m_current_line(0)
+  , m_end(false)
+  , m_state(E_STATE_OUT_OF_TAG)
 {
   m_source_lines = m_source_origin.split("\n");
 }
@@ -51,6 +51,8 @@ void LexicalAnalyzer::setSource(const QString& i_php_source)
 
 Token LexicalAnalyzer::next_token()
 {
+  trim_spaces();
+
   if (m_state == E_STATE_NOT_INIT || m_state == E_STATE_FINISHED)
     return Token();
 
@@ -60,6 +62,22 @@ Token LexicalAnalyzer::next_token()
     {
       m_state = E_STATE_CODE;
       return Token(E_TT_TAG, TAG_OPEN, m_current_line, m_current_pos);
+    }
+    else
+    {
+      m_state = E_STATE_FINISHED;
+      return Token();
+    }
+  }
+
+  if (current_symbol() == '"')
+  {
+    return extract_constexpt_str();
+
+    if (shift_from_current("\""))
+    {
+      m_state = E_STATE_CODE;
+      return Token(E_TT_CONSTEXPR, "\"", m_current_line, m_current_pos);
     }
     else
     {
@@ -95,6 +113,12 @@ Token LexicalAnalyzer::next_token()
       m_state = E_STATE_FINISHED;
       return Token();
     }
+  }
+
+  if (current_symbol() == SEMICOLON)
+  {
+    increase_pos(1);
+    return Token(E_TT_DELIMITER, SEMICOLON, m_current_line, m_current_pos);
   }
 
   if (current_symbol() == '$')
@@ -144,31 +168,52 @@ Token LexicalAnalyzer::next_token()
     }
   }
 
-  for (auto& keyword : brackents())
+  auto temp_pos = m_current_pos;
+  for (auto& keyword : brackets())
   {
-    if (-1 != m_source_lines[m_current_line].indexOf(keyword, m_current_pos))
+    if (temp_pos == m_source_lines[m_current_line].indexOf(keyword, m_current_pos))
     {
-      if (m_current_pos != m_source_lines[m_current_line].length())
+      if (temp_pos != m_source_lines[m_current_line].length())
       {
         increase_pos(keyword.length());
-        return Token(E_TT_DELIMITER, keyword, m_current_line, m_current_pos);
+        return Token(E_TT_DELIMITER, keyword, m_current_line, temp_pos);
+      }
+      else
+      {
+        Q_ASSERT(false);
       }
     }
   }
-
 
   for (auto& keyword : operators())
   {
-    if (-1 != m_source_lines[m_current_line].indexOf(keyword, m_current_pos))
+    if (temp_pos == m_source_lines[m_current_line].indexOf(keyword, m_current_pos))
     {
-      if (m_current_pos != m_source_lines[m_current_line].length())
+      if (temp_pos != m_source_lines[m_current_line].length())
       {
         increase_pos(keyword.length());
-        return Token(E_TT_OPERATOR, keyword, m_current_line, m_current_pos);
+        return Token(E_TT_DELIMITER, keyword, m_current_line, temp_pos);
+      }
+      else
+      {
+        Q_ASSERT(false);
       }
     }
   }
 
+  //for (auto& keyword : operators())
+  //{
+  //  if (-1 != m_source_lines[m_current_line].indexOf(keyword, m_current_pos))
+  //  {
+  //    if (m_current_pos != m_source_lines[m_current_line].length())
+  //    {
+  //      increase_pos(keyword.length());
+  //      return Token(E_TT_OPERATOR, keyword, m_current_line, m_current_pos);
+  //    }
+  //  }
+  //}
+
+  m_state = E_STATE_FINISHED;
   return Token(E_TT_ERROR, "wft", m_current_line, m_current_pos);
 }
 
@@ -182,15 +227,14 @@ QString LexicalAnalyzer::eat_keyword(QString& i_str)
   return "";
 }
 
-int LexicalAnalyzer::trim_front(QString& i_str)
+void LexicalAnalyzer::trim_spaces()
 {
-  int i = -1;
-
-  for (; i_str[++i].isSpace();){};
-
-  i_str.remove(0, i);
-
-  return i;
+  if (isEnd())
+  {
+    m_state = E_STATE_FINISHED;
+    return;
+  }
+  for (; current_symbol().isSpace(); increase_pos(1));
 }
 
 QStringList split(QString i_line)
@@ -254,4 +298,31 @@ int LexicalAnalyzer::increase_pos(int i_pos)
     m_state = E_STATE_FINISHED;
 
   return m_current_pos;
+}
+
+Token LexicalAnalyzer::extract_constexpt_str()
+{
+  auto temp_pos = m_current_pos;
+  increase_pos(1);
+  m_current_pos = m_source_lines[m_current_line].indexOf("\"", m_current_pos);
+
+  if (m_current_pos != -1)
+  {
+    increase_pos(1);
+    return Token(E_TT_CONSTEXPR, m_source_lines[m_current_line].mid(temp_pos, m_current_pos - temp_pos), m_current_line, temp_pos);
+  }
+  else
+  {
+    return Token(E_TT_ERROR, "<error>", m_current_line, temp_pos);
+  }
+
+}
+
+bool LexicalAnalyzer::isEnd() const
+{
+  if (m_current_line == m_source_lines.length() - 1 && m_current_pos == m_source_lines[m_current_line].length())
+  {
+    return true;
+  }
+  return false;
 }

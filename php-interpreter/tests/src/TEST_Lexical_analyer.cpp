@@ -15,7 +15,7 @@
 
 TEST(Lexical_analyzer, test_interface)
 {
-  QString source_path(".\\Data\\source.txt");
+  QString source_path(".\\Data\\source.php");
   QFile source_file(source_path);
   if(!source_file.open(QIODevice::ReadOnly | QIODevice::Text))
   {
@@ -38,6 +38,7 @@ TEST(Lexical_analyzer, test_interface)
   expected_tokens.push_back(Token(E_TT_DELIMITER,  ")",                    3, 12));
   expected_tokens.push_back(Token(E_TT_KEYWORD,    "echo",                 4, 3));
   expected_tokens.push_back(Token(E_TT_CONSTEXPR,  "\"a bigger than b\"",  4, 8));
+  expected_tokens.push_back(Token(E_TT_DELIMITER,  ";",                    4, 25));
   expected_tokens.push_back(Token(E_TT_TAG,        "?>",                   5, 0));
 
   QVector<Token> actual_tokens;
