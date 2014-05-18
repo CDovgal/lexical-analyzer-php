@@ -23,7 +23,7 @@ public:
 private:
     Token next_token();
 
-    int trim_front(QString& i_str);
+    void trim_spaces();
 
     int next_pos(const QString& i_str);
 
@@ -34,6 +34,10 @@ private:
     QChar current_symbol() const;
 
     int increase_pos(int i_pos);
+
+    Token extract_constexpt_str();
+
+    bool isEnd() const;
 
     QString m_source_origin;
 

@@ -40,7 +40,7 @@ void MainWindow::load_source()
   if (!source_file.open(QIODevice::ReadOnly | QIODevice::Text))
   {
     ui->mp_file_status->setText("Bad file name! Maybe you should use this filename?");
-    ui->mp_sourcefile_path->setText(QApplication::applicationDirPath() + "\\Data\\source.php");
+    ui->mp_sourcefile_path->setText(QApplication::applicationDirPath() + ".\\Data\\source.php");
     return;
   }
 
