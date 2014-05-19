@@ -56,12 +56,14 @@ Token LexicalAnalyzer::next_token()
   if (m_state == E_STATE_NOT_INIT || m_state == E_STATE_FINISHED)
     return Token();
 
+  m_token_pos = qMakePair(m_current_line, m_current_pos);
+
   if (m_state == E_STATE_OUT_OF_TAG)
   {
     if (shift_from_current(TAG_OPEN))
     {
       m_state = E_STATE_CODE;
-      return Token(E_TT_TAG, TAG_OPEN, m_current_line, m_current_pos);
+      return Token(E_TT_TAG, TAG_OPEN, current_token_pos());
     }
     else
     {
@@ -77,7 +79,7 @@ Token LexicalAnalyzer::next_token()
     if (shift_from_current("\""))
     {
       m_state = E_STATE_CODE;
-      return Token(E_TT_CONSTEXPR, "\"", m_current_line, m_current_pos);
+      return Token(E_TT_CONSTEXPR, "\"", current_token_pos());
     }
     else
     {
@@ -91,14 +93,14 @@ Token LexicalAnalyzer::next_token()
   {
     increase_pos(2);
     m_state = E_STATE_OUT_OF_TAG;
-    return Token(E_TT_TAG, TAG_CLOSE, m_current_line, m_current_pos);
+    return Token(E_TT_TAG, TAG_CLOSE, current_token_pos());
   }
 
   if (str == COMMENT_OPEN)
   {
     increase_pos(2);
     m_state = E_STATE_COMMENT;
-    return Token(E_TT_COMMENT, COMMENT_OPEN, m_current_line, m_current_pos);
+    return Token(E_TT_COMMENT, COMMENT_OPEN, current_token_pos());
   }
 
   if (m_state == E_STATE_COMMENT)
@@ -106,7 +108,7 @@ Token LexicalAnalyzer::next_token()
     if (shift_from_current(COMMENT_END))
     {
       m_state = E_STATE_CODE;
-      return Token(E_TT_COMMENT, COMMENT_END, m_current_line, m_current_pos);
+      return Token(E_TT_COMMENT, COMMENT_END, current_token_pos());
     }
     else
     {
@@ -118,7 +120,7 @@ Token LexicalAnalyzer::next_token()
   if (current_symbol() == SEMICOLON)
   {
     increase_pos(1);
-    return Token(E_TT_DELIMITER, SEMICOLON, m_current_line, m_current_pos);
+    return Token(E_TT_DELIMITER, SEMICOLON, current_token_pos());
   }
 
   if (current_symbol() == '$')
@@ -145,11 +147,11 @@ Token LexicalAnalyzer::next_token()
     QString var_str = m_source_lines[temp_curr_line].mid(var_start, temp_curr_pos - var_start);
     if (var_str.length() > 1)
     {
-      return Token(E_TT_IDENTIFIER, var_str, temp_curr_line, var_start);
+      return Token(E_TT_IDENTIFIER, var_str, current_token_pos());
     }
     else
     {
-      return Token(E_TT_ERROR, var_str, temp_curr_line, temp_curr_pos);
+      return Token(E_TT_ERROR, var_str, current_token_pos());
     }
   }
 
@@ -162,7 +164,7 @@ Token LexicalAnalyzer::next_token()
         if (m_current_pos != m_source_lines[m_current_line].length())
         {
           increase_pos(keyword.length());
-          return Token(E_TT_KEYWORD, keyword, m_current_line, m_current_pos);
+          return Token(E_TT_KEYWORD, keyword, current_token_pos());
         }
       }
     }
@@ -176,7 +178,7 @@ Token LexicalAnalyzer::next_token()
       if (temp_pos != m_source_lines[m_current_line].length())
       {
         increase_pos(keyword.length());
-        return Token(E_TT_DELIMITER, keyword, m_current_line, temp_pos);
+        return Token(E_TT_DELIMITER, keyword, current_token_pos());
       }
       else
       {
@@ -192,7 +194,7 @@ Token LexicalAnalyzer::next_token()
       if (temp_pos != m_source_lines[m_current_line].length())
       {
         increase_pos(keyword.length());
-        return Token(E_TT_DELIMITER, keyword, m_current_line, temp_pos);
+        return Token(E_TT_OPERATOR, keyword, current_token_pos());
       }
       else
       {
@@ -214,7 +216,7 @@ Token LexicalAnalyzer::next_token()
   //}
 
   m_state = E_STATE_FINISHED;
-  return Token(E_TT_ERROR, "wft", m_current_line, m_current_pos);
+  return Token(E_TT_ERROR, "wft", current_token_pos());
 }
 
 int next_pos(const QString& i_str)
@@ -262,6 +264,7 @@ bool LexicalAnalyzer::shift_from_current(const QString& i_str)
     m_current_line < m_source_lines.length();
     ++m_current_line, ++m_current_pos)
   {
+    m_token_pos = qMakePair(m_current_line, m_current_pos);
     m_current_pos = m_source_lines[m_current_line].indexOf(i_str, m_current_pos);
 
     if (m_current_pos != -1)
@@ -325,4 +328,9 @@ bool LexicalAnalyzer::isEnd() const
     return true;
   }
   return false;
+}
+
+TokenPosition LexicalAnalyzer::current_token_pos() const
+{
+  return m_token_pos;
 }

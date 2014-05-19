@@ -18,6 +18,8 @@ public:
 
     void setSource(const QString& i_php_source);
 
+    TokenPosition current_token_pos() const;
+
     void reset();
 
 private:
@@ -49,4 +51,6 @@ private:
     bool m_end;
 
     E_STATE m_state;
+
+    TokenPosition m_token_pos;
 };

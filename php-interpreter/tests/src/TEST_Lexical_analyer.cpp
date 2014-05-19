@@ -32,13 +32,13 @@ TEST(Lexical_analyzer, test_interface)
   expected_tokens.push_back(Token(E_TT_TAG,        "<?php",                2, 0));
   expected_tokens.push_back(Token(E_TT_KEYWORD,    "if",                   3, 0));
   expected_tokens.push_back(Token(E_TT_DELIMITER,  "(",                    3, 3));
-  expected_tokens.push_back(Token(E_TT_IDENTIFIER, "$a",                   3, 5));
-  expected_tokens.push_back(Token(E_TT_OPERATOR,   ">",                    3, 8));
-  expected_tokens.push_back(Token(E_TT_IDENTIFIER, "$b",                   3, 10));
-  expected_tokens.push_back(Token(E_TT_DELIMITER,  ")",                    3, 12));
-  expected_tokens.push_back(Token(E_TT_KEYWORD,    "echo",                 4, 3));
-  expected_tokens.push_back(Token(E_TT_CONSTEXPR,  "\"a bigger than b\"",  4, 8));
-  expected_tokens.push_back(Token(E_TT_DELIMITER,  ";",                    4, 25));
+  expected_tokens.push_back(Token(E_TT_IDENTIFIER, "$a",                   3, 4));
+  expected_tokens.push_back(Token(E_TT_OPERATOR,   ">",                    3, 7));
+  expected_tokens.push_back(Token(E_TT_IDENTIFIER, "$b",                   3, 9));
+  expected_tokens.push_back(Token(E_TT_DELIMITER,  ")",                    3, 11));
+  expected_tokens.push_back(Token(E_TT_KEYWORD,    "echo",                 4, 2));
+  expected_tokens.push_back(Token(E_TT_CONSTEXPR,  "\"a bigger than b\"",  4, 7));
+  expected_tokens.push_back(Token(E_TT_DELIMITER,  ";",                    4, 24));
   expected_tokens.push_back(Token(E_TT_TAG,        "?>",                   5, 0));
 
   QVector<Token> actual_tokens;
