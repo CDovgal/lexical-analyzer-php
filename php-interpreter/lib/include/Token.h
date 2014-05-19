@@ -1,10 +1,13 @@
 #pragma once
 
 #include <QString>
+#include <QPair>
 
 #include "Aux_def.h"
 
 #include <iostream>
+
+typedef QPair<int, int> TokenPosition;
 
 enum E_TOKEN_TYPE
 {
@@ -37,6 +40,10 @@ public:
     , m_lexem(i_lexem)
     , m_row(i_row)
     , m_column(i_col)
+  {}
+
+  Token(E_TOKEN_TYPE i_token_type, const QString& i_lexem, const TokenPosition& i_pos)
+    : Token(i_token_type, i_lexem, i_pos.first, i_pos.second)
   {}
 
   E_TOKEN_TYPE m_token_type;
