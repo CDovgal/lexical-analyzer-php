@@ -4,3 +4,8 @@ php-interpreter/bin
 externals/qt5runtime/x64
 externals/qt5runtime/x86
 php-interpreter/build
+externals/gtest-1.7.0
+.DS_Store
+.hgignore.orig
+externals/.DS_Store
+php-interpreter/.DS_Store
