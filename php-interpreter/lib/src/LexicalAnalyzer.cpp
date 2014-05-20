@@ -74,7 +74,7 @@ Token LexicalAnalyzer::next_token()
 
   if (current_symbol() == '"')
   {
-    return extract_constexpt_str();
+    return extract_constexpr_str();
 
     if (shift_from_current("\""))
     {
@@ -203,17 +203,8 @@ Token LexicalAnalyzer::next_token()
     }
   }
 
-  //for (auto& keyword : operators())
-  //{
-  //  if (-1 != m_source_lines[m_current_line].indexOf(keyword, m_current_pos))
-  //  {
-  //    if (m_current_pos != m_source_lines[m_current_line].length())
-  //    {
-  //      increase_pos(keyword.length());
-  //      return Token(E_TT_OPERATOR, keyword, m_current_line, m_current_pos);
-  //    }
-  //  }
-  //}
+  if (current_symbol().isNumber())
+    return extract_constexpr_number();
 
   m_state = E_STATE_FINISHED;
   return Token(E_TT_ERROR, "wft", current_token_pos());
@@ -264,8 +255,9 @@ bool LexicalAnalyzer::shift_from_current(const QString& i_str)
     m_current_line < m_source_lines.length();
     ++m_current_line, ++m_current_pos)
   {
-    m_token_pos = qMakePair(m_current_line, m_current_pos);
     m_current_pos = m_source_lines[m_current_line].indexOf(i_str, m_current_pos);
+
+    m_token_pos = qMakePair(m_current_line, m_current_pos);
 
     if (m_current_pos != -1)
     {
@@ -303,7 +295,7 @@ int LexicalAnalyzer::increase_pos(int i_pos)
   return m_current_pos;
 }
 
-Token LexicalAnalyzer::extract_constexpt_str()
+Token LexicalAnalyzer::extract_constexpr_str()
 {
   auto temp_pos = m_current_pos;
   increase_pos(1);
@@ -318,7 +310,15 @@ Token LexicalAnalyzer::extract_constexpt_str()
   {
     return Token(E_TT_ERROR, "<error>", m_current_line, temp_pos);
   }
+}
 
+Token LexicalAnalyzer::extract_constexpr_number()
+{
+  auto temp_pos = m_current_pos;
+
+  for (; current_symbol().isNumber(); increase_pos(1));
+
+  return Token(E_TT_CONSTEXPR, m_source_lines[m_current_line].mid(temp_pos, m_current_pos - temp_pos), current_token_pos());
 }
 
 bool LexicalAnalyzer::isEnd() const

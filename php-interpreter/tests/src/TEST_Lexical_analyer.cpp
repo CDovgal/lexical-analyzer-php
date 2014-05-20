@@ -43,19 +43,17 @@ TEST(Lexical_analyzer, test_interface)
 
   QVector<Token> actual_tokens;
   LexicalAnalyzer analyzer(source_file_text);
-  for(Token temp; analyzer.nextToken(temp); )
+  for (Token temp; analyzer.nextToken(temp);)
     actual_tokens.push_back(temp);
 
   ASSERT_EQ(expected_tokens.size(), actual_tokens.size())
     << "Mismatch of expected number of tokens and actual result";
 
   std::equal(expected_tokens.cbegin(), expected_tokens.cend(), 
-              actual_tokens.cbegin(), [] (const Token& expected_token, const Token& actual_token) -> bool
-  //for(auto iter1 = expected_tokens.cbegin(), iter2 = actual_tokens.cbegin(); iter1 != expected_tokens.cend(); ++iter1, ++iter2)
-  {
-    //EXPECT_EQ(*iter1, *iter2) << "Token mismatch: " << *iter1 << "not equal to " << *iter2;
-    EXPECT_EQ(expected_token, actual_token) << "Token mismatch\n";// << lhv << "\nnot equal to " << rhv << '\n';
-    return true;
-  }
+               actual_tokens.cbegin(), [] (const Token& expected_token, const Token& actual_token) -> bool
+    {
+      EXPECT_EQ(expected_token, actual_token) << "Token mismatch\n";
+      return true;
+    }
   );
 }

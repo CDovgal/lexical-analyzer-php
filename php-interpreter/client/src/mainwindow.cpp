@@ -8,9 +8,9 @@
 #include "LA_Aux.h"
 #include "LexicalAnalyzer.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-QMainWindow(parent),
-ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent)
+  : QMainWindow(parent)
+  , ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
   ui->mp_result_table->setColumnWidth(0, 154);
@@ -68,6 +68,8 @@ void MainWindow::on_mp_load_button_clicked()
 
 void MainWindow::on_mp_analize_button_clicked()
 {
+  ui->mp_result_table->setRowCount(0);
+
   LexicalAnalyzer anal(ui->mp_source->toPlainText());
   for (Token token; anal.nextToken(token);)
   {
