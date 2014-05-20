@@ -18,8 +18,6 @@ public:
 
     void setSource(const QString& i_php_source);
 
-    TokenPosition current_token_pos() const;
-
     void reset();
 
 private:
@@ -37,9 +35,13 @@ private:
 
     int increase_pos(int i_pos);
 
-    Token extract_constexpt_str();
+    Token extract_constexpr_str();
+
+    Token extract_constexpr_number();
 
     bool isEnd() const;
+
+    TokenPosition current_token_pos() const;
 
     QString m_source_origin;
 
