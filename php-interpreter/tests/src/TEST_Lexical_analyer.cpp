@@ -13,6 +13,8 @@
 #include <QFile>
 #include <algorithm>
 
+#include "TEST_BASE_Lexical_analyzer.h"
+
 TEST(Lexical_analyzer, test_interface)
 {
   QString source_path(".\\Data\\source.php");
@@ -57,3 +59,30 @@ TEST(Lexical_analyzer, test_interface)
     }
   );
 }
+
+
+class TEST_nextToken : public TEST_ISource
+{
+public:
+  TEST_nextToken() {}
+  virtual ~TEST_nextToken() {}
+
+  virtual void CommencePositive()
+  {
+    ASSERT_TRUE(true);
+
+  }
+};
+
+DECLARE_TESTS(nextToken)
+
+DECLARE_SPECIFIC_TEST(nextToken, Positive)
+
+static const PARAM_Lexical_analyzer a("PHP", { Token() }, false);
+static const PARAM_Lexical_analyzer* kFileParams_Positive[] = {
+  &a
+};
+
+INSTANTIATE_TEST_CASE_P(nextToken,
+  TEST_AUTO_PositivenextToken,
+  ::testing::ValuesIn(kFileParams_Positive));

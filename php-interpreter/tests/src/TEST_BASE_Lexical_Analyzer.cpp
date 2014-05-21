@@ -18,10 +18,14 @@ PARAM_Lexical_analyzer::PARAM_Lexical_analyzer(const QString& i_filename, const 
   , m_is_exist(i_file_existing)
 {}
 
-
 TEST_Lexical_analyzer::TEST_Lexical_analyzer()
 {
 
+}
+
+const PARAM_Lexical_analyzer* TEST_Lexical_analyzer::data() const
+{
+  return GetParam();
 }
 
 QString TEST_Lexical_analyzer::filename() const
@@ -59,7 +63,7 @@ void TEST_Lexical_analyzer::Init()
   QFile source_file(filename());
   if (!source_file.open(QIODevice::ReadOnly | QIODevice::Text))
   {
-    if (!is_exist())
+    if (is_exist())
       ASSERT_FALSE(true)
         << "\nFile " << filename().toStdString() << " was not found.\n";
   }
@@ -72,4 +76,14 @@ void TEST_Lexical_analyzer::Init()
   for (Token token; lex.nextToken(token);)
     m_actual_tokens.push_back(token);
 
+}
+
+void TEST_Lexical_analyzer::Terminate()
+{
+
+}
+
+std::string TEST_Lexical_analyzer::ToString() const
+{
+  return "ololo";
 }
