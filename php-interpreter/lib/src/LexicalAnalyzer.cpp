@@ -103,6 +103,13 @@ Token LexicalAnalyzer::next_token()
     return Token(E_TT_COMMENT, COMMENT_OPEN, current_token_pos());
   }
 
+  if (str == COMMENT_LINE)
+  {
+    ++m_current_line;
+    m_current_pos = 0;
+    return Token(E_TT_COMMENT, COMMENT_LINE, current_token_pos());
+  }
+
   if (m_state == E_STATE_COMMENT)
   {
     if (shift_from_current(COMMENT_END))
