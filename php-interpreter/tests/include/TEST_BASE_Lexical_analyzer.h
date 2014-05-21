@@ -32,9 +32,9 @@ class TEST_ISource
 {
 public:
   virtual void Init() = 0;
-  virtual void Terminate() = 0;
 
-  virtual const PARAM_Lexical_analyzer* data() const = 0;
+  virtual const PARAM_Lexical_analyzer* init_data() const = 0;
+  virtual const QString& source_code() const = 0;
 };
 
 class TEST_Lexical_analyzer : public ::testing::TestWithParam< const PARAM_Lexical_analyzer* >, public TEST_ISource
@@ -42,16 +42,15 @@ class TEST_Lexical_analyzer : public ::testing::TestWithParam< const PARAM_Lexic
 public:
   TEST_Lexical_analyzer();
 
-  virtual const PARAM_Lexical_analyzer* data() const;
+  virtual const PARAM_Lexical_analyzer* init_data() const;
 
   QString filename() const;
   bool is_exist() const;
+  const TokensArray& expectedTokens() const;
 
-  const TokensArray& ExpectedTokens() const;
-  const TokensArray& ActualTokens() const;
+  virtual const QString& source_code() const;
 
   virtual void Init();
-  virtual void Terminate();
 
   virtual void SetUp();
   virtual void TearDown();
@@ -59,7 +58,7 @@ public:
   virtual std::string ToString() const;
 
 private:
-  TokensArray m_actual_tokens;
+  QString m_source_code;
 };
 
 #define DECLARE_TESTS(TESTNAME) \
@@ -68,8 +67,8 @@ public: \
   TEST_AUTO_##TESTNAME() {} \
   virtual ~TEST_AUTO_##TESTNAME() {} \
   virtual void Init() { TEST_Lexical_analyzer::Init(); } \
-  virtual void Terminate() { TEST_Lexical_analyzer::Terminate(); } \
-  virtual const PARAM_Lexical_analyzer* data() const { return TEST_Lexical_analyzer::data(); } \
+  virtual const PARAM_Lexical_analyzer* init_data() const { return TEST_Lexical_analyzer::init_data(); } \
+  virtual const QString& source_code() const { return TEST_Lexical_analyzer::source_code(); } \
 };
 
 #define DECLARE_SPECIFIC_TEST(TESTNAME, TYPENAME) \
