@@ -69,8 +69,23 @@ public:
 
   virtual void CommencePositive()
   {
-    ASSERT_TRUE(true);
+    const auto& expected_tokens = init_data()->m_tokens;
 
+    //TokensArray actual_tokens;
+    //LexicalAnalyzer lex(source_code());
+    //for (Token token; lex.nextToken(token);)
+    //  actual_tokens.push_back(token);
+
+    //ASSERT_EQ(expected_tokens.size(), actual_tokens.size())
+    //  << "Mismatch of expected number of tokens and actual result";
+
+    //std::equal(expected_tokens.cbegin(), expected_tokens.cend(),
+    //  actual_tokens.cbegin(), [] (const Token& expected_token, const Token& actual_token) -> bool
+    //  {
+    //    EXPECT_EQ(expected_token, actual_token) << "Token mismatch\n";
+    //    return true;
+    //  }
+    //);
   }
 };
 
@@ -78,7 +93,24 @@ DECLARE_TESTS(nextToken)
 
 DECLARE_SPECIFIC_TEST(nextToken, Positive)
 
-static const PARAM_Lexical_analyzer a("PHP", { Token() }, false);
+
+
+static const PARAM_Lexical_analyzer a(".\\Data\\source.php", {
+    Token(E_TT_TAG,           "<?php", 2, 0)
+  , Token(E_TT_KEYWORD,       "if", 3, 0)
+  , Token(E_TT_DELIMITER,     "(", 3, 3)
+  , Token(E_TT_IDENTIFIER,    "$a", 3, 4)
+  , Token(E_TT_OPERATOR,      ">", 3, 7)
+  , Token(E_TT_IDENTIFIER,    "$b", 3, 9)
+  , Token(E_TT_DELIMITER,     ")", 3, 11)
+  , Token(E_TT_KEYWORD,       "echo", 4, 2)
+  , Token(E_TT_CONSTEXPR,     "\"a bigger than b\"", 4, 7)
+  , Token(E_TT_DELIMITER,     ";", 4, 24)
+  , Token(E_TT_TAG,           "?>", 5, 0)
+}, true);
+
+
+
 static const PARAM_Lexical_analyzer* kFileParams_Positive[] = {
   &a
 };

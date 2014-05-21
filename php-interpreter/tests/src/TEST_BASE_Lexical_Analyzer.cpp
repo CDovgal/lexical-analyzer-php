@@ -11,6 +11,7 @@
 #include <LexicalAnalyzer.h>
 
 #include <QFile>
+#include <sstream>
 
 PARAM_Lexical_analyzer::PARAM_Lexical_analyzer(const QString& i_filename, const TokensArray& i_tokens, bool i_file_existing)
   : m_filename(i_filename)
@@ -20,10 +21,10 @@ PARAM_Lexical_analyzer::PARAM_Lexical_analyzer(const QString& i_filename, const 
 
 TEST_Lexical_analyzer::TEST_Lexical_analyzer()
 {
-
+  SCOPED_TRACE(ToString());
 }
 
-const PARAM_Lexical_analyzer* TEST_Lexical_analyzer::data() const
+const PARAM_Lexical_analyzer* TEST_Lexical_analyzer::init_data() const
 {
   return GetParam();
 }
@@ -38,14 +39,14 @@ bool TEST_Lexical_analyzer::is_exist() const
   return GetParam()->m_is_exist;
 }
 
-const TokensArray& TEST_Lexical_analyzer::ExpectedTokens() const
+const TokensArray& TEST_Lexical_analyzer::expectedTokens() const
 {
   return GetParam()->m_tokens;
 }
 
-const TokensArray& TEST_Lexical_analyzer::ActualTokens() const
+const QString& TEST_Lexical_analyzer::source_code() const
 {
-  return m_actual_tokens;
+  return m_source_code;
 }
 
 void TEST_Lexical_analyzer::SetUp()
@@ -60,6 +61,7 @@ void TEST_Lexical_analyzer::TearDown()
 
 void TEST_Lexical_analyzer::Init()
 {
+  SCOPED_TRACE(ToString());
   QFile source_file(filename());
   if (!source_file.open(QIODevice::ReadOnly | QIODevice::Text))
   {
@@ -68,22 +70,18 @@ void TEST_Lexical_analyzer::Init()
         << "\nFile " << filename().toStdString() << " was not found.\n";
   }
 
-  QString source_file_text;
+  m_source_code.clear();
+
   for (; !source_file.atEnd();)
-    source_file_text += source_file.readLine();
-
-  LexicalAnalyzer lex(source_file_text);
-  for (Token token; lex.nextToken(token);)
-    m_actual_tokens.push_back(token);
-
-}
-
-void TEST_Lexical_analyzer::Terminate()
-{
-
+    m_source_code += source_file.readLine();
 }
 
 std::string TEST_Lexical_analyzer::ToString() const
 {
-  return "ololo";
+  std::stringstream str;
+  str <<
+    "\tFilename: " << filename().toStdString() <<
+    "\nIs exist: " << (is_exist() ? "yes" : "no") <<
+    "\nNumber of tokens: " << expectedTokens().length() << "\n";
+  return str.str();
 }
