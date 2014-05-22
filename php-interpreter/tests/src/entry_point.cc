@@ -11,7 +11,11 @@
 int main(int argc, char* argv[]) {
 
   ::testing::InitGoogleTest(&argc, argv);
+  
+#ifdef _DEBUG
   std::this_thread::sleep_for(std::chrono::seconds(10));
+#endif
+
   //::testing::AddGlobalTestEnvironment( new SELEnvironment );
   return RUN_ALL_TESTS();
 }

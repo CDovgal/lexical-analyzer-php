@@ -19,55 +19,29 @@ PARAM_Lexical_analyzer::PARAM_Lexical_analyzer(const QString& i_filename, const 
   , m_is_exist(i_file_existing)
 {}
 
+std::string PARAM_Lexical_analyzer::toStdString() const
+{
+  std::stringstream str;
+  str <<
+    "\tFilename: " << /*m_filename.toStdString().c_str() <<*/ std::endl;
+    //"\nIs exist: " << (m_is_exist ? "yes" : "no");<<
+    //"\nNumber of tokens: "  << m_tokens.length()           << '\n';*/ 
+
+  return str.str();
+}
+
 TEST_Lexical_analyzer::TEST_Lexical_analyzer()
-{
-  SCOPED_TRACE(ToString());
-}
-
-const PARAM_Lexical_analyzer* TEST_Lexical_analyzer::init_data() const
-{
-  return GetParam();
-}
-
-QString TEST_Lexical_analyzer::filename() const
-{
-  return GetParam()->m_filename;
-}
-
-bool TEST_Lexical_analyzer::is_exist() const
-{
-  return GetParam()->m_is_exist;
-}
-
-const TokensArray& TEST_Lexical_analyzer::expectedTokens() const
-{
-  return GetParam()->m_tokens;
-}
-
-const QString& TEST_Lexical_analyzer::source_code() const
-{
-  return m_source_code;
-}
-
-void TEST_Lexical_analyzer::SetUp()
-{
-  Init();
-}
-
-void TEST_Lexical_analyzer::TearDown()
-{
-
-}
+{}
 
 void TEST_Lexical_analyzer::Init()
 {
-  SCOPED_TRACE(ToString());
+ 
   QFile source_file(filename());
   if (!source_file.open(QIODevice::ReadOnly | QIODevice::Text))
   {
-    if (is_exist())
+    if (isFileExist())
       ASSERT_FALSE(true)
-        << "\nFile " << filename().toStdString() << " was not found.\n";
+      << "\nFile " << toStdString() << " was not found.\n";
   }
 
   m_source_code.clear();
@@ -76,12 +50,38 @@ void TEST_Lexical_analyzer::Init()
     m_source_code += source_file.readLine();
 }
 
-std::string TEST_Lexical_analyzer::ToString() const
+void TEST_Lexical_analyzer::SetUp()
 {
-  std::stringstream str;
-  str <<
-    "\tFilename: " << filename().toStdString() <<
-    "\nIs exist: " << (is_exist() ? "yes" : "no") <<
-    "\nNumber of tokens: " << expectedTokens().length() << "\n";
-  return str.str();
+  SCOPED_TRACE(GetParam()->toStdString());
+  Init();
+}
+
+void TEST_Lexical_analyzer::TearDown()
+{
+  SCOPED_TRACE(GetParam()->toStdString());
+}
+
+std::string TEST_Lexical_analyzer::toStdString() const
+{
+  return GetParam()->toStdString();
+}
+
+bool TEST_Lexical_analyzer::isFileExist() const
+{
+  return GetParam()->m_is_exist;
+}
+
+QString TEST_Lexical_analyzer::filename() const
+{
+  return GetParam()->m_filename;
+}
+
+const QString& TEST_Lexical_analyzer::sourceCode() const
+{
+  return m_source_code;
+}
+
+const TokensArray& TEST_Lexical_analyzer::expectedTokens() const
+{
+  return GetParam()->m_tokens;
 }
