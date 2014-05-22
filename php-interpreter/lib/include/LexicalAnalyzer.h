@@ -29,8 +29,6 @@ private:
 
     bool shift_from_current(const QString& i_str);
 
-    QString eat_keyword(QString& i_str);
-
     QChar current_symbol() const;
 
     int increase_pos(int i_pos);

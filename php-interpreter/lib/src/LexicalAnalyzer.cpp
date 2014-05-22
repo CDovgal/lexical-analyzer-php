@@ -217,14 +217,18 @@ Token LexicalAnalyzer::next_token()
   return Token(E_TT_ERROR, "wft", current_token_pos());
 }
 
+void LexicalAnalyzer::reset()
+{
+  m_current_pos = 0;
+  m_current_line = 0;
+  m_token_pos = qMakePair(0, 0);
+  m_end = false;
+  m_state = E_STATE_OUT_OF_TAG;
+}
+
 int next_pos(const QString& i_str)
 {
   return 0;
-}
-
-QString LexicalAnalyzer::eat_keyword(QString& i_str)
-{
-  return "";
 }
 
 void LexicalAnalyzer::trim_spaces()
@@ -235,25 +239,6 @@ void LexicalAnalyzer::trim_spaces()
     return;
   }
   for (; current_symbol().isSpace(); increase_pos(1));
-}
-
-QStringList split(QString i_line)
-{
-  QVector<QString> operators;
-  //    = {"(", ")", "[", "]", ":", ";", "//", "/", "\"", "!", ".", "<=", ">", ">=", "==", "!=", "===", "!==", "<>", "<" , "&&", "||", "=", "+=", "-=", "*=", "/=", "%=", "*", "/", "%", "+", "-", "and", "xor", "or"};
-
-  for (int i = 0; i < i_line.size() - 1; ++i)
-  {
-    int pos1 = operators.indexOf(QString(i_line[i]));
-
-    if (pos1 == -1)
-      continue;
-
-    if (i_line[i + operators[pos1].length()] != ' ')
-      i_line.insert(i + operators[pos1].length(), ' ');
-  }
-
-  return i_line.split(" ");
 }
 
 bool LexicalAnalyzer::shift_from_current(const QString& i_str)
