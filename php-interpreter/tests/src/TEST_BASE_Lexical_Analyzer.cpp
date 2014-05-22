@@ -23,9 +23,9 @@ std::string PARAM_Lexical_analyzer::toStdString() const
 {
   std::stringstream str;
   str <<
-    "\tFilename: " << /*m_filename.toStdString().c_str() <<*/ std::endl;
-    //"\nIs exist: " << (m_is_exist ? "yes" : "no");<<
-    //"\nNumber of tokens: "  << m_tokens.length()           << '\n';*/ 
+    "\tFilename: " << m_filename.toStdString()    << std::endl <<
+    "\nIs exist: " << (m_is_exist ? "yes" : "no") <<
+    "\nNumber of tokens: "  << m_tokens.length()  << '\n'; 
 
   return str.str();
 }
@@ -34,8 +34,7 @@ TEST_Lexical_analyzer::TEST_Lexical_analyzer()
 {}
 
 void TEST_Lexical_analyzer::Init()
-{
- 
+{ 
   QFile source_file(filename());
   if (!source_file.open(QIODevice::ReadOnly | QIODevice::Text))
   {
