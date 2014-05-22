@@ -11,10 +11,10 @@ PHP_LIB_API std::ostream& operator<<(std::ostream& i_stream, E_TOKEN_TYPE i_toke
 PHP_LIB_API std::ostream& operator<<(std::ostream& i_stream, const Token& i_token_type)
 {
   i_stream << 
-    "Token type:\t" << i_token_type.m_token_type           << '\n' <<
-    "Lexem:\t"      << i_token_type.m_lexem.toStdString()  << '\n' <<
-    "Row:\t"        << i_token_type.m_row                  << '\n' <<
-    "Column:\t"     << i_token_type.m_column                         ;
+    "\nToken type:\t" << i_token_type.m_token_type           <<
+    "\nLexem:\t"      << i_token_type.m_lexem.toStdString()  <<
+    "\nRow:\t"        << i_token_type.m_row                  <<
+    "\nColumn:\t"     << i_token_type.m_column               ;
 
   return i_stream;
 }

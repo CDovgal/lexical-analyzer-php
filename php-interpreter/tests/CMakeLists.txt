@@ -64,6 +64,10 @@ install(TARGETS ${EXECUTABLE_NAME}
     DESTINATION bin/${CMAKE_BUILD_TYPE}
 )
 
-install(FILES Data/source.php
+install(FILES Data/source_1.php
+    DESTINATION bin/${CMAKE_BUILD_TYPE}/Data
+)
+
+install(FILES Data/source_2.php
     DESTINATION bin/${CMAKE_BUILD_TYPE}/Data
 )
