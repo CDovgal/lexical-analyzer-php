@@ -237,9 +237,7 @@ void LexicalAnalyzer::trim_spaces()
 
 bool LexicalAnalyzer::shift_from_current(const QString& i_str)
 {
-  for (;
-    m_current_line < m_source_lines.length();
-    ++m_current_line, ++m_current_pos)
+  for (; !isEnd(); ++m_current_line, ++m_current_pos)
   {
     m_current_pos = m_source_lines[m_current_line].indexOf(i_str, m_current_pos);
 
@@ -310,9 +308,8 @@ Token LexicalAnalyzer::extract_constexpr_number()
 bool LexicalAnalyzer::isEnd() const
 {
   if (m_current_line == m_source_lines.length() - 1 && m_current_pos == m_source_lines[m_current_line].length())
-  {
     return true;
-  }
+
   return false;
 }
 
