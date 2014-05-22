@@ -124,12 +124,6 @@ Token LexicalAnalyzer::next_token()
     }
   }
 
-  if (current_symbol() == SEMICOLON)
-  {
-    increase_pos(1);
-    return Token(E_TT_DELIMITER, SEMICOLON, current_token_pos());
-  }
-
   if (current_symbol() == '$')
   {
     int temp_curr_pos = m_current_pos;
