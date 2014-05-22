@@ -178,14 +178,14 @@ Token LexicalAnalyzer::next_token()
   }
 
   auto temp_pos = m_current_pos;
-  for (auto& keyword : brackets())
+  for (auto& delimiter : delimiters())
   {
-    if (temp_pos == m_source_lines[m_current_line].indexOf(keyword, m_current_pos))
+    if (temp_pos == m_source_lines[m_current_line].indexOf(delimiter, m_current_pos))
     {
       if (temp_pos != m_source_lines[m_current_line].length())
       {
-        increase_pos(keyword.length());
-        return Token(E_TT_DELIMITER, keyword, current_token_pos());
+        increase_pos(delimiter.length());
+        return Token(E_TT_DELIMITER, delimiter, current_token_pos());
       }
       else
       {
