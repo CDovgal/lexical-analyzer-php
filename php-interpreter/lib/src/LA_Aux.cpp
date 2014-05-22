@@ -3,11 +3,6 @@
 #include <QVector>
 
 /////////////////////////////////////////////
-// SEMICOLON
-QString SEMICOLON = ";";
-/////////////////////////////////////////////
-
-/////////////////////////////////////////////
 // TAGS
 QString TAG_OPEN  = "<?php";
 QString TAG_CLOSE = "?>";
@@ -21,13 +16,14 @@ QString COMMENT_END  = "*/";
 ////////////////////////////////////////////
 
 ////////////////////////////////////////////
-// BRACKETS
+// BRACKETS, SEMICOLON
 QString BRACKET_ROUND_OPEN    = "(";
 QString BRACKET_ROUND_CLOSE   = ")";
 QString BRACKET_SQUARE_OPEN   = "[";
 QString BRACKET_SQUARE_CLOSE  = "(";
 QString BRACKET_FIGURE_OPEN   = "{";
 QString BRACKET_FIGURE_CLOSE  = "}";
+QString SEMICOLON             = ";";
 ////////////////////////////////////////////
 
 /////////////////////////////////////////////
@@ -105,13 +101,14 @@ static QVector<QString> COMMENTS = {
   , COMMENT_END
 };
 
-static QVector<QString> BRACKETS = {
+static QVector<QString> DELIMITERS = {
     BRACKET_ROUND_OPEN
   , BRACKET_ROUND_CLOSE
   , BRACKET_SQUARE_OPEN
   , BRACKET_SQUARE_CLOSE
   , BRACKET_FIGURE_OPEN
   , BRACKET_FIGURE_CLOSE
+  , SEMICOLON
 };
 
 static QVector<QString> KEYWORDS = {
@@ -256,9 +253,9 @@ PHP_LIB_API bool isComment(const QString& i_str)
   return COMMENTS.indexOf(i_str) != -1;
 }
 
-PHP_LIB_API bool isBRACKETS(const QString& i_str)
+PHP_LIB_API bool isDelimiters(const QString& i_str)
 {
-  return BRACKETS.indexOf(i_str) != -1;
+  return DELIMITERS.indexOf(i_str) != -1;
 }
 
 PHP_LIB_API bool isKeyword(const QString& i_str)
@@ -292,9 +289,9 @@ PHP_LIB_API const QVector<QString>& comments()
   return COMMENTS;
 }
 
-PHP_LIB_API const QVector<QString>& brackets()
+PHP_LIB_API const QVector<QString>& delimiters()
 {
-  return BRACKETS;
+  return DELIMITERS;
 }
 
 PHP_LIB_API const QVector<QString>& keywords()
