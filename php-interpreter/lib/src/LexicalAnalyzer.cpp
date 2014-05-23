@@ -72,20 +72,9 @@ Token LexicalAnalyzer::next_token()
     }
   }
 
-  if (current_symbol() == '"')
+  if (current_symbol() == '"' || current_symbol() == '\'')
   {
     return extract_constexpr_str();
-
-    if (shift_from_current("\""))
-    {
-      m_state = E_STATE_CODE;
-      return Token(E_TT_CONSTEXPR, "\"", current_token_pos());
-    }
-    else
-    {
-      m_state = E_STATE_FINISHED;
-      return Token();
-    }
   }
 
   QString str = m_source_lines[m_current_line].mid(m_current_pos, 2);
@@ -156,7 +145,7 @@ Token LexicalAnalyzer::next_token()
     }
   }
 
-  if (current_symbol().isLower())
+  if (current_symbol().isLetter())
   {
     for (auto& keyword : keywords())
     {
@@ -282,8 +271,9 @@ int LexicalAnalyzer::increase_pos(int i_pos)
 Token LexicalAnalyzer::extract_constexpr_str()
 {
   auto temp_pos = m_current_pos;
+  auto curr = current_symbol();
   increase_pos(1);
-  m_current_pos = m_source_lines[m_current_line].indexOf("\"", m_current_pos);
+  m_current_pos = m_source_lines[m_current_line].indexOf(QString(curr), m_current_pos);
 
   if (m_current_pos != -1)
   {
