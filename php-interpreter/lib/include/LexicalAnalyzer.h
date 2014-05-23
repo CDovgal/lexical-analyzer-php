@@ -5,6 +5,7 @@
 
 #include "Token.h"
 #include "Aux_def.h"
+#include <regex>
 
 enum E_STATE : int;
 
@@ -53,4 +54,6 @@ private:
     E_STATE m_state;
 
     TokenPosition m_token_pos;
+
+    static std::regex variable_id_regex;
 };
