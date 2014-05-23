@@ -87,15 +87,21 @@ static const TokensArray tokensarray_source_2 =
 
 static const TokensArray tokensarray_source_3 =
 {
-  Token(E_TT_TAG,           "<?php",                2, 0)
+    Token(E_TT_TAG,         "<?php",                2, 0)
   , Token(E_TT_IDENTIFIER,  "$a",                   3, 0)
   , Token(E_TT_OPERATOR,    "=",                    3, 3)
   , Token(E_TT_CONSTEXPR,   "1",                    3, 5)
   , Token(E_TT_DELIMITER,   ";",                    3, 6)
-  , Token(E_TT_ERROR,       "assd",                 4, 0)
+  , Token(E_TT_IDENTIFIER,  "assd",                 4, 0)
   , Token(E_TT_OPERATOR,    "-=",                   4, 4)
   , Token(E_TT_CONSTEXPR,   "2",                    4, 6)
-  , Token(E_TT_TAG,         "?>",                   6, 0)
+  , Token(E_TT_KEYWORD,     "function",             6, 0)
+  , Token(E_TT_IDENTIFIER,  "asas",                 6, 9)
+  , Token(E_TT_DELIMITER,   "(",                    6, 13)
+  , Token(E_TT_DELIMITER,   ")",                    6, 14)
+  , Token(E_TT_DELIMITER,   "{",                    7, 0)
+  , Token(E_TT_DELIMITER,   "}",                    7, 1)
+  , Token(E_TT_TAG,         "?>",                   9, 0)
 };
 
 static const PARAM_Lexical_analyzer source_code_1(".\\Data\\source_1.php", tokensarray_source_1, true);

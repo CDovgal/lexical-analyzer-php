@@ -54,7 +54,7 @@ extern QString BRACKET_FIGURE_CLOSE;
 extern QString KEYWORD_DEFINE;
 extern QString KEYWORD_INCLUDE;
 extern QString KEYWORD_NULL;
-//extern QString KEYWORD_FUNCTION;
+extern QString KEYWORD_FUNCTION;
 //extern QString KEYWORD_CONST;
 extern QString KEYWORD_RETURN;
 extern QString KEYWORD_FOR;
