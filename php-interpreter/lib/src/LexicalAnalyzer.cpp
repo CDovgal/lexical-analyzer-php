@@ -70,6 +70,12 @@ Token LexicalAnalyzer::next_token()
     m_state = E_STATE_CODE;
     return Token(E_TT_TAG, TAG_OPEN, current_token_pos());
   };
+
+  if (m_state == E_STATE_COMMENT && shift_from_current(COMMENT_END))
+  {
+    m_state = E_STATE_CODE;
+    return Token(E_TT_COMMENT, COMMENT_END, current_token_pos());
+  }
    
   std::string subline = m_source_lines[m_current_line].mid(m_current_pos).toStdString();
 
@@ -149,20 +155,6 @@ Token LexicalAnalyzer::next_token()
       ++m_current_line;
       m_current_pos = 0;
       return Token(E_TT_COMMENT, COMMENT_LINE, current_token_pos());
-    }
-
-    if (m_state == E_STATE_COMMENT)
-    {
-      if (shift_from_current(COMMENT_END))
-      {
-        m_state = E_STATE_CODE;
-        return Token(E_TT_COMMENT, COMMENT_END, current_token_pos());
-      }
-      else
-      {
-        m_state = E_STATE_FINISHED;
-        return Token();
-      }
     }
   }
 
