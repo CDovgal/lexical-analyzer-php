@@ -20,7 +20,21 @@ static const TokensArray tokensarray_source_1 =
   , Token(E_TT_KEYWORD,     "echo",                 4, 2)
   , Token(E_TT_CONSTEXPR,  R"("a bigger than b")",  4, 7)
   , Token(E_TT_DELIMITER,   ";",                    4, 24)
-  , Token(E_TT_TAG,         "?>",                   5, 0)
+  , Token(E_TT_KEYWORD,     "define",               6, 0)
+  , Token(E_TT_DELIMITER,   "(",                    6, 6)
+  , Token(E_TT_CONSTEXPR,  R"("MAX")",              6, 7)
+  , Token(E_TT_OPERATOR,    ",",                    6, 12)
+  , Token(E_TT_CONSTEXPR,   "15",                   6, 14)
+  , Token(E_TT_DELIMITER,   ")",                    6, 16)
+  , Token(E_TT_DELIMITER,   ";",                    6, 17)
+  , Token(E_TT_IDENTIFIER,  "$nul",                 7, 7)
+  , Token(E_TT_OPERATOR,    "=",                    7, 12)
+  , Token(E_TT_KEYWORD,     "NULL",                 7, 13)
+  , Token(E_TT_DELIMITER,   ";",                    7, 17)
+  , Token(E_TT_KEYWORD,     "include",              8, 0)
+  , Token(E_TT_CONSTEXPR,  R"('source_2.php')",     8, 8)
+  , Token(E_TT_DELIMITER,   ";",                    8, 22)
+  , Token(E_TT_TAG,         "?>",                   9, 0)
 };
 
 static const TokensArray tokensarray_source_2 = 
