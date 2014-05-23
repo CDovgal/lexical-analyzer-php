@@ -87,7 +87,15 @@ Token LexicalAnalyzer::next_token()
 
   // extract number const expression
   if (current_symbol().isNumber())
-    return extract_constexpr_number();
+  {
+    std::regex constexpr_str_regex("[0-9]+[\.]?[0-9]*");
+    auto str_id_iter = std::sregex_iterator(std::begin(subline), std::end(subline), constexpr_str_regex);
+    if (str_id_iter != std::sregex_iterator())
+    {
+      increase_pos(str_id_iter->str().length());
+      return Token(E_TT_CONSTEXPR, str_id_iter->str().c_str(), current_token_pos());
+    }
+  }
 
   // extract variable identifier
   if (current_symbol() == '$')

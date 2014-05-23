@@ -64,7 +64,7 @@ PHP_LIB_API QString toString(E_TOKEN_TYPE i_token_type)
   case E_TT_COMMENT:
     str = "Comment"; break;
   default:
-    str = "Error.";
+    str = "Error";
   }
 
   return str;
