@@ -71,3 +71,7 @@ install(FILES Data/source_1.php
 install(FILES Data/source_2.php
     DESTINATION bin/${CMAKE_BUILD_TYPE}/Data
 )
+
+install(FILES Data/source_error_handling.php
+    DESTINATION bin/${CMAKE_BUILD_TYPE}/Data
+)
