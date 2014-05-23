@@ -56,4 +56,6 @@ private:
     TokenPosition m_token_pos;
 
     static std::regex variable_id_regex;
+    static std::regex constexpr_str_regex;
+    static std::regex constexpr_chr_regex;
 };
