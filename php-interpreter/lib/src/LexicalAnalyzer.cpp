@@ -5,6 +5,8 @@
 #include <QVector>
 
 std::regex LexicalAnalyzer::variable_id_regex("[a-zA-Z][a-zA-Z0-9_]*");
+std::regex LexicalAnalyzer::constexpr_str_regex("[^\"]*");
+std::regex LexicalAnalyzer::constexpr_chr_regex("[^']*");
 
 enum E_STATE : int
 {
@@ -70,11 +72,31 @@ Token LexicalAnalyzer::next_token()
       return Token(E_TT_TAG, TAG_OPEN, current_token_pos());
     };
 
-  std::string str = m_source_lines[m_current_line].mid(m_current_pos + 1).toStdString();
-  // extract string const expression
-  if (current_symbol() == '"' || current_symbol() == '\'')
+
+  if (current_symbol() == '"')
   {
-    return extract_constexpr_str();
+    std::string subline = m_source_lines[m_current_line].mid(m_current_pos).toStdString();
+    auto str_id_iter = std::sregex_iterator(++std::begin(subline), std::end(subline), constexpr_str_regex);
+    if (str_id_iter != std::sregex_iterator())
+    {
+      std::string constexpt_str("\"\"");
+      constexpt_str.insert(1, str_id_iter->str());
+      increase_pos(constexpt_str.length());
+      return Token(E_TT_CONSTEXPR, constexpt_str.c_str(), current_token_pos());
+    }
+  }
+
+  if (current_symbol() == '\'')
+  {
+    std::string subline = m_source_lines[m_current_line].mid(m_current_pos).toStdString();
+    auto str_id_iter = std::sregex_iterator(++std::begin(subline), std::end(subline), constexpr_chr_regex);
+    if (str_id_iter != std::sregex_iterator())
+    {
+      std::string constexpt_str("''");
+      constexpt_str.insert(1, str_id_iter->str());
+      increase_pos(constexpt_str.length());
+      return Token(E_TT_CONSTEXPR, constexpt_str.c_str(), current_token_pos());
+    }
   }
 
   // extract number const expression
@@ -84,7 +106,8 @@ Token LexicalAnalyzer::next_token()
   // extract variable identifier
   if (current_symbol() == '$')
   {
-    auto var_id_iter = std::sregex_iterator(std::begin(str), std::end(str), variable_id_regex);
+    std::string subline = m_source_lines[m_current_line].mid(m_current_pos).toStdString();
+    auto var_id_iter = std::sregex_iterator(++std::begin(subline), std::end(subline), variable_id_regex);
     if (var_id_iter != std::sregex_iterator())
     {
       std::string var_name = var_id_iter->str();
