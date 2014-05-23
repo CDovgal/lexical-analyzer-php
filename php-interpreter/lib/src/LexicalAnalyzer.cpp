@@ -197,11 +197,11 @@ Token LexicalAnalyzer::next_token()
     return extract_constexpr_number();
 
 
-  QString error;
-  for (; !isEnd() && current_symbol().isLetter(); increase_pos(1))
-    error.push_back(current_symbol());
+  QString func_identifier;
+  for (; !isEnd() && (current_symbol().isLetterOrNumber() || current_symbol() == '_' ); increase_pos(1))
+    func_identifier.push_back(current_symbol());
 
-  return Token(E_TT_ERROR, error, m_token_pos);
+  return Token(E_TT_IDENTIFIER, func_identifier, m_token_pos);
 }
 
 void LexicalAnalyzer::reset()
