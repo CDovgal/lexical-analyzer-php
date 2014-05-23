@@ -22,10 +22,12 @@ PARAM_Lexical_analyzer::PARAM_Lexical_analyzer(const QString& i_filename, const 
 std::string PARAM_Lexical_analyzer::toStdString() const
 {
   std::stringstream str;
+#ifdef  _NDEBUG
   str <<
     "\tFilename: " << m_filename.toStdString()    << std::endl <<
     "\nIs exist: " << (m_is_exist ? "yes" : "no") <<
     "\nNumber of tokens: "  << m_tokens.length()  << '\n'; 
+#endif //  _DEBUG
 
   return str.str();
 }

@@ -85,15 +85,29 @@ static const TokensArray tokensarray_source_2 =
   , Token(E_TT_TAG,         "?>",                   19, 0)
 };
 
+static const TokensArray tokensarray_source_3 =
+{
+  Token(E_TT_TAG,           "<?php",                2, 0)
+  , Token(E_TT_IDENTIFIER,  "$a",                   3, 0)
+  , Token(E_TT_OPERATOR,    "=",                    3, 3)
+  , Token(E_TT_CONSTEXPR,   "1",                    3, 5)
+  , Token(E_TT_DELIMITER,   ";",                    3, 6)
+  , Token(E_TT_ERROR,       "assd",                 4, 0)
+  , Token(E_TT_OPERATOR,    "-=",                   4, 4)
+  , Token(E_TT_CONSTEXPR,   "2",                    4, 6)
+  , Token(E_TT_TAG,         "?>",                   6, 0)
+};
+
 static const PARAM_Lexical_analyzer source_code_1(".\\Data\\source_1.php", tokensarray_source_1, true);
 static const PARAM_Lexical_analyzer source_code_2(".\\Data\\source_2.php", tokensarray_source_2, true);
+static const PARAM_Lexical_analyzer source_code_3(".\\Data\\source_error_handling.php", tokensarray_source_3, true);
 
-
-static const PARAM_Lexical_analyzer* kFileParams_Positive[] = {
+static const PARAM_Lexical_analyzer* kParams_Positive[] = {
     &source_code_1
   , &source_code_2
+  , &source_code_3
 };
 
 INSTANTIATE_TEST_CASE_P(NextToken,
   AUTOTEST_PositiveNextToken,
-  ::testing::ValuesIn(kFileParams_Positive));
+  ::testing::ValuesIn(kParams_Positive));

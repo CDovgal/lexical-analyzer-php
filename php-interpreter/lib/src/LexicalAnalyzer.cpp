@@ -196,8 +196,12 @@ Token LexicalAnalyzer::next_token()
   if (current_symbol().isNumber())
     return extract_constexpr_number();
 
-  m_state = E_STATE_FINISHED;
-  return Token(E_TT_ERROR, "wft", current_token_pos());
+
+  QString error;
+  for (; !isEnd() && current_symbol().isLetter(); increase_pos(1))
+    error.push_back(current_symbol());
+
+  return Token(E_TT_ERROR, error, m_token_pos);
 }
 
 void LexicalAnalyzer::reset()
@@ -221,7 +225,7 @@ void LexicalAnalyzer::trim_spaces()
     m_state = E_STATE_FINISHED;
     return;
   }
-  for (; current_symbol().isSpace(); increase_pos(1));
+  for (; current_symbol().isNull() || current_symbol().isSpace(); increase_pos(1));
 }
 
 bool LexicalAnalyzer::shift_from_current(const QString& i_str)
@@ -244,25 +248,30 @@ bool LexicalAnalyzer::shift_from_current(const QString& i_str)
 
 QChar LexicalAnalyzer::current_symbol() const
 {
-  return m_source_lines[m_current_line][m_current_pos];
+  if (m_current_pos < m_source_lines[m_current_line].length())
+    return m_source_lines[m_current_line][m_current_pos];
+  else
+    return QChar();
 }
 
 int LexicalAnalyzer::increase_pos(int i_pos)
 {
   m_current_pos += i_pos;
 
-  if (m_source_lines[m_current_line].length() < m_current_pos)
-  {
-    Q_ASSERT(false);
-  }
+  //if (m_source_lines[m_current_line].length() < m_current_pos)
+  //{
+  //  Q_ASSERT(false);
+  //}
 
-  if (m_source_lines[m_current_line].length() == m_current_pos)
+  if (m_current_line < m_source_lines.length() && m_source_lines[m_current_line].length() <= m_current_pos)
   {
     ++m_current_line;
     m_current_pos = 0;
   }
 
-  if (m_current_line == m_source_lines.length() && m_current_pos == m_source_lines[m_current_line].length())
+  if (m_current_line == m_source_lines.length() /*|| 
+    ( (m_current_line == m_source_lines.length() - 1) && m_current_pos >= m_source_lines[m_current_line].length())*/
+    )
     m_state = E_STATE_FINISHED;
 
   return m_current_pos;
@@ -290,13 +299,18 @@ Token LexicalAnalyzer::extract_constexpr_number()
 {
   auto temp_pos = m_current_pos;
 
-  for (; current_symbol().isNumber(); increase_pos(1));
+  QString number;
+  for (; current_symbol().isNumber(); increase_pos(1))
+    number.push_back(current_symbol());
 
-  return Token(E_TT_CONSTEXPR, m_source_lines[m_current_line].mid(temp_pos, m_current_pos - temp_pos), current_token_pos());
+  return Token(E_TT_CONSTEXPR, number, current_token_pos());
 }
 
 bool LexicalAnalyzer::isEnd() const
 {
+  if (m_current_line >= m_source_lines.length())
+    return true;
+
   if (m_current_line == m_source_lines.length() - 1 && m_current_pos == m_source_lines[m_current_line].length())
     return true;
 
