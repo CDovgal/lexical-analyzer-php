@@ -4,6 +4,8 @@
 
 #include <QVector>
 
+std::regex LexicalAnalyzer::variable_id_regex("[a-zA-Z][a-zA-Z0-9_]*");
+
 enum E_STATE : int
 {
   E_STATE_NOT_INIT = 0,
@@ -68,6 +70,7 @@ Token LexicalAnalyzer::next_token()
       return Token(E_TT_TAG, TAG_OPEN, current_token_pos());
     };
 
+  std::string str = m_source_lines[m_current_line].mid(m_current_pos + 1).toStdString();
   // extract string const expression
   if (current_symbol() == '"' || current_symbol() == '\'')
   {
@@ -81,22 +84,16 @@ Token LexicalAnalyzer::next_token()
   // extract variable identifier
   if (current_symbol() == '$')
   {
-    QString var_str(current_symbol());
-    
-    // first symbol should be letter
-    if (increase_pos(1) && current_symbol().isLetter())
+    auto var_id_iter = std::sregex_iterator(std::begin(str), std::end(str), variable_id_regex);
+    if (var_id_iter != std::sregex_iterator())
     {
-      var_str.push_back(current_symbol());
-      // each next - letter, number or _
-      for (; increase_pos(1) && ( current_symbol().isLetterOrNumber() || current_symbol() == '_');)
-        var_str.push_back(current_symbol());
-    }
-    else
-    {
-      return Token(E_TT_ERROR, var_str, current_token_pos());
+      std::string var_name = var_id_iter->str();
+      var_name.insert(0, "$");
+      increase_pos(var_name.length());
+      return Token(E_TT_IDENTIFIER, var_name.c_str(), current_token_pos());
     }
 
-    return Token(E_TT_IDENTIFIER, var_str, current_token_pos());
+    return Token(E_TT_ERROR, "$", current_token_pos());
   }
 
   if (current_symbol().isLetter())
