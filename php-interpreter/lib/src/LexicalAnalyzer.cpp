@@ -5,8 +5,8 @@
 #include <QVector>
 
 std::regex LexicalAnalyzer::variable_id_regex("[a-zA-Z][a-zA-Z0-9_]*");
-std::regex LexicalAnalyzer::constexpr_str_regex("[^\"]*");
-std::regex LexicalAnalyzer::constexpr_chr_regex("[^']*");
+std::regex LexicalAnalyzer::constexpr_str_regex("\"[^\"]*\"");
+std::regex LexicalAnalyzer::constexpr_chr_regex("'[^']*'");
 
 enum E_STATE : int
 {
@@ -76,14 +76,12 @@ Token LexicalAnalyzer::next_token()
   if (current_symbol() == '"' || current_symbol() == '\'')
   {
     char chr = ( current_symbol() == '\"' ? '\"' : '\'' );
-    std::regex constexpr_str_regex(std::string("[^") + chr + std::string("]*"));
-    auto str_id_iter = std::sregex_iterator(++std::begin(subline), std::end(subline), constexpr_str_regex);
+    std::regex constexpr_str_regex(chr + std::string("[^") + chr + std::string("]*") + chr);
+    auto str_id_iter = std::sregex_iterator(std::begin(subline), std::end(subline), constexpr_str_regex);
     if (str_id_iter != std::sregex_iterator())
     {
-      std::string constexpt_str = { chr, chr };
-      constexpt_str.insert(1, str_id_iter->str());
-      increase_pos(constexpt_str.length());
-      return Token(E_TT_CONSTEXPR, constexpt_str.c_str(), current_token_pos());
+      increase_pos(str_id_iter->str().length());
+      return Token(E_TT_CONSTEXPR, str_id_iter->str().c_str(), current_token_pos());
     }
   }
 
