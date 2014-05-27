@@ -7,8 +7,7 @@
 */
 
 #pragma once
-
-#include <gtest\gtest.h>
+#include <gtest/gtest.h>
 
 #include <QString>
 #include <QVector>
@@ -78,9 +77,11 @@ public: \
   virtual const TokensArray& expectedTokens() const{ return TEST_Lexical_analyzer::expectedTokens(); }; \
 };
 
+
 #define DECLARE_SPECIFIC_TEST(TESTNAME, TYPENAME) \
   typedef AUTOTEST_##TESTNAME AUTOTEST_##TYPENAME##TESTNAME; \
-  TEST_P(AUTOTEST_##TYPENAME##TESTNAME, ##TYPENAME) {\
+  TEST_P(AUTOTEST_##TYPENAME##TESTNAME, TYPENAME) { \
   SCOPED_TRACE(toStdString()); \
   AUTOTEST_##TESTNAME::Commence##TYPENAME(); \
-  }
+  };
+

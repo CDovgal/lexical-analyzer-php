@@ -6,10 +6,13 @@
  * @author  Copyright (c) 2014
  */
 
-#include <gtest\gtest.h>
+#include <gtest/gtest.h>
 #include <thread>
-int main(int argc, char* argv[]) {
+#include <QApplication>
 
+int main(int argc, char* argv[]) {
+  QApplication app(argc, argv);
+  
   ::testing::InitGoogleTest(&argc, argv);
   
 #ifdef _DEBUG

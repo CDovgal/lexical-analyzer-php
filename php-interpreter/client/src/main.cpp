@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include <QApplication>
 
-#ifdef __APPLE__ && __MACH__
+#ifdef __APPLE__ //&& __MACH__
 
 int main(int argc, char *argv[]) {
 

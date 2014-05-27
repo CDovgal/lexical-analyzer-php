@@ -12,11 +12,12 @@
 
 #include <QFile>
 #include <sstream>
+#include <QCoreApplication>
 
 PARAM_Lexical_analyzer::PARAM_Lexical_analyzer(const QString& i_filename, const TokensArray& i_tokens, bool i_file_existing)
-  : m_filename(i_filename)
+  : m_is_exist(i_file_existing)
+  , m_filename(i_filename)
   , m_tokens(i_tokens)
-  , m_is_exist(i_file_existing)
 {}
 
 std::string PARAM_Lexical_analyzer::toStdString() const
@@ -36,8 +37,8 @@ TEST_Lexical_analyzer::TEST_Lexical_analyzer()
 {}
 
 void TEST_Lexical_analyzer::Init()
-{ 
-  QFile source_file(filename());
+{
+  QFile source_file(QCoreApplication::applicationDirPath() + filename());
   if (!source_file.open(QIODevice::ReadOnly | QIODevice::Text))
   {
     if (isFileExist())

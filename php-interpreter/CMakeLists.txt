@@ -13,9 +13,13 @@ else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
     SET( EX_PLATFORM_NAME "x86" )
 endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
+set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++")
+
 add_subdirectory(lib)
 add_subdirectory(client)
 add_subdirectory(tests)
+
+
 
 
 #install(DIRECTORY
