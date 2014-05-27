@@ -6,7 +6,11 @@
 * @author  Copyright (c) 2014
 */
 
+#pragma once
+
 #include "Token.h"
+
+enum SA_State : int;
 
 class SyntaxAnalizer
 {
@@ -15,4 +19,6 @@ public:
 
   bool readNextToken(const Token& i_token);
 
+private:
+  SA_State m_state;
 };
