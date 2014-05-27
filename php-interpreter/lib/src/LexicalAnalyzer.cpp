@@ -94,7 +94,7 @@ Token LexicalAnalyzer::next_token()
   // extract number const expression
   if (current_symbol().isNumber())
   {
-    std::regex constexpr_str_regex("[0-9]+[\.]?[0-9]*");
+    std::regex constexpr_str_regex("[0-9]+[\\.]?[0-9]*");
     auto str_id_iter = std::sregex_iterator(std::begin(subline), std::end(subline), constexpr_str_regex);
     if (str_id_iter != std::sregex_iterator())
     {
@@ -274,7 +274,7 @@ Token LexicalAnalyzer::extract_constexpr_str()
     return Token(E_TT_ERROR, "<error>", m_token_pos);
   }
 }
-
+/*
 Token LexicalAnalyzer::extract_constexpr_number()
 {
   auto temp_pos = m_current_pos;
@@ -285,7 +285,7 @@ Token LexicalAnalyzer::extract_constexpr_number()
 
   return Token(E_TT_CONSTEXPR, number, current_token_pos());
 }
-
+*/
 bool LexicalAnalyzer::isEnd() const
 {
   if (m_current_line >= m_source_lines.length())

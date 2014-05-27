@@ -17,10 +17,11 @@ enum SA_State : int
 };
 
 SyntaxAnalizer::SyntaxAnalizer()
+  :  m_state(SA_STATE_NOTHING)
 {}
 
 bool SyntaxAnalizer::readNextToken(const Token& i_token)
 {
 
-
+    return false;
 }

@@ -104,9 +104,9 @@ static const TokensArray tokensarray_source_3 =
   , Token(E_TT_TAG,         "?>",                   9, 0)
 };
 
-static const PARAM_Lexical_analyzer source_code_1(".\\Data\\source_1.php", tokensarray_source_1, true);
-static const PARAM_Lexical_analyzer source_code_2(".\\Data\\source_2.php", tokensarray_source_2, true);
-static const PARAM_Lexical_analyzer source_code_3(".\\Data\\source_error_handling.php", tokensarray_source_3, true);
+static const PARAM_Lexical_analyzer source_code_1("/Data/source_1.php", tokensarray_source_1, true);
+static const PARAM_Lexical_analyzer source_code_2("/Data/source_2.php", tokensarray_source_2, true);
+static const PARAM_Lexical_analyzer source_code_3("/Data/source_error_handling.php", tokensarray_source_3, true);
 
 static const PARAM_Lexical_analyzer* kParams_Positive[] = {
     &source_code_1
