@@ -8,6 +8,14 @@
 
 #include "SyntaxAnalizer.h"
 
+enum SA_State : int
+{
+  SA_STATE_NOTHING = 0,
+
+
+
+};
+
 SyntaxAnalizer::SyntaxAnalizer()
 {}
 
