@@ -14,7 +14,6 @@
 #include <QStringList>
 #include "TokenSource.h"
 
-
 typedef QStringList ProductionResult;
 
 typedef QString Identifier;
@@ -33,13 +32,10 @@ public:
   
   ProductionResult readProduction();
 
-  bool readNextToken(const Token& i_token, QString& o_info);
-
-private:
-  
-  Token* next();
+private:  
+  Token* next ();
   Token  token() const;
-  Token* prev();
+  Token* prev ();
   
   void readSubProduction(ProductionResult& io_production);
   

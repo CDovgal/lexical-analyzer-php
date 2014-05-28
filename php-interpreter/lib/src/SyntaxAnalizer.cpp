@@ -9,10 +9,6 @@
 #include "SyntaxAnalizer.h"
 #include "LA_Aux.h"
 
-#define INCREMENT_LAYER inc_layer();
-#define DECREMENT_LAYER dec_layer();
-
-
 SyntaxAnalyzer::SyntaxAnalyzer(const TokenSource& i_token_source)
   :  m_source(i_token_source)
   ,  m_depth(0)
@@ -128,7 +124,7 @@ bool SyntaxAnalyzer::readDelimiter(Delimiter& io_delimiter)
 {
   SCOPED_DEPTH_METER
   
-  auto token = nextToken();
+  auto token = *next();
   
   if (E_TT_DELIMITER == token.m_token_type)
   {
@@ -139,7 +135,6 @@ bool SyntaxAnalyzer::readDelimiter(Delimiter& io_delimiter)
   
   return false;
 }
-
 
 Token* SyntaxAnalyzer::next()
 {
