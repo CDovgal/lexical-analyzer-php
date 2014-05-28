@@ -26,6 +26,12 @@
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0" colspan="2">
          <widget class="QLabel" name="label">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>25</height>
+           </size>
+          </property>
           <property name="text">
            <string>Code snippet</string>
           </property>
@@ -60,7 +66,7 @@ if ($a &gt; $b)
         <item row="2" column="1" colspan="2">
          <widget class="QLineEdit" name="mp_sourcefile_path">
           <property name="text">
-           <string>.\Data\source.php</string>
+           <string>/Data/source_1.php</string>
           </property>
          </widget>
         </item>
@@ -106,51 +112,68 @@ if ($a &gt; $b)
       <item>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Result table</string>
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="currentIndex">
+           <number>1</number>
           </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QTableWidget" name="mp_result_table">
-          <property name="font">
-           <font>
-            <pointsize>9</pointsize>
-           </font>
-          </property>
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <attribute name="horizontalHeaderVisible">
-           <bool>true</bool>
-          </attribute>
-          <attribute name="verticalHeaderVisible">
-           <bool>true</bool>
-          </attribute>
-          <attribute name="verticalHeaderDefaultSectionSize">
-           <number>20</number>
-          </attribute>
-          <column>
-           <property name="text">
-            <string>Tocken class</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Lexem</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Row</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Column</string>
-           </property>
-          </column>
+          <widget class="QWidget" name="tab">
+           <attribute name="title">
+            <string>Lexical analysis</string>
+           </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QTableWidget" name="mp_result_table">
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <attribute name="horizontalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderDefaultSectionSize">
+               <number>20</number>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>Tocken class</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Lexem</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Row</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Column</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_2">
+           <attribute name="title">
+            <string>Syntax analysis</string>
+           </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QPlainTextEdit" name="mp_syntax_output"/>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>

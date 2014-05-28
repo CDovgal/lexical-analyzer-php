@@ -4,9 +4,13 @@
 #include <QVector>
 #include <QString>
 #include <QFile>
+#include <algorithm>
 
 #include "LA_Aux.h"
 #include "LexicalAnalyzer.h"
+#include "SyntaxAnalizer.h"
+
+#include "TokenSource.h"
 
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
@@ -40,7 +44,7 @@ void MainWindow::load_source()
   if (!source_file.open(QIODevice::ReadOnly | QIODevice::Text))
   {
     ui->mp_file_status->setText("Bad file name! Maybe you should use this filename?");
-    ui->mp_sourcefile_path->setText(QApplication::applicationDirPath() + ".\\Data\\source.php");
+    ui->mp_sourcefile_path->setText(QApplication::applicationDirPath() + "/Data/source_1.php");
     return;
   }
 
@@ -70,9 +74,23 @@ void MainWindow::on_mp_analize_button_clicked()
 {
   ui->mp_result_table->setRowCount(0);
 
-  LexicalAnalyzer anal(ui->mp_source->toPlainText());
-  for (Token token; anal.nextToken(token);)
+  QVector<Token> all_tokens;
+
+  // Lexical tab
+  LexicalAnalyzer lex(ui->mp_source->toPlainText());
+  for (Token token; lex.nextToken(token);)
   {
     add_record(token);
+    all_tokens.push_back(token);
+  }
+
+  // Syntax tab
+  SyntaxAnalyzer syntax = SyntaxAnalyzer(TokenSource(all_tokens));
+
+  for (ProductionResult prod = syntax.readProduction(); !prod.isEmpty(); prod = syntax.readProduction())
+  {
+    std::for_each(std::begin(prod), std::end(prod), [&](const Production& i_sub_prod) {
+      ui->mp_syntax_output->appendPlainText(i_sub_prod);
+    });
   }
 }
