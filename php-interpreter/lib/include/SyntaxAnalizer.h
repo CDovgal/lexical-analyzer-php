@@ -14,28 +14,30 @@
 #include <QStringList>
 #include "TokenSource.h"
 
-typedef QStringList ProductionResult;
+PHP_LIB_API typedef QString     Production;
+PHP_LIB_API typedef QStringList ProductionResult;
 
-typedef QString Identifier;
-typedef QString Delimiter;
-typedef QString Variable;
-typedef QString Argument;
+PHP_LIB_API typedef QString     Argument;
+PHP_LIB_API typedef QStringList ArgumentList;
 
-typedef QStringList ArgumentList;
+PHP_LIB_API typedef QString Variable;
+PHP_LIB_API typedef QString Delimiter;
+PHP_LIB_API typedef QString Identifier;
 
 enum SA_State : int;
 
-class SyntaxAnalyzer
+class PHP_LIB_API SyntaxAnalyzer
 {
 public:
   SyntaxAnalyzer(const TokenSource& i_token_iter);
   
   ProductionResult readProduction();
 
-private:  
-  Token* next ();
+private:
+
+  const Token* next ();
   Token  token() const;
-  Token* prev ();
+  const Token* prev ();
   
   void readSubProduction(ProductionResult& io_production);
   
@@ -69,6 +71,8 @@ private:
   };
     
   int m_depth;
+
+  bool m_hack;
 };
 
 #define SCOPED_DEPTH_METER \
