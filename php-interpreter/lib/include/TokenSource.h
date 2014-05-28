@@ -10,14 +10,20 @@
 
 #include "Token.h"
 
-class TokenSource
+#include <QVector>
+
+class PHP_LIB_API TokenSource
 {
 public:
+  TokenSource(const QVector<Token>& i_tokens);
   
-  Token* next();
+  const Token* next();
   Token token() const;
-  Token* prev();
+  const Token* prev();
+
+  bool isValid() const;
   
 private:
-  
+  QVector<Token> m_tokens;
+  int m_current;
 };
