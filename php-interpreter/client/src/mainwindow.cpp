@@ -73,6 +73,7 @@ void MainWindow::on_mp_load_button_clicked()
 void MainWindow::on_mp_analize_button_clicked()
 {
   ui->mp_result_table->setRowCount(0);
+  ui->mp_syntax_output->clear();
 
   QVector<Token> all_tokens;
 
@@ -86,11 +87,12 @@ void MainWindow::on_mp_analize_button_clicked()
 
   // Syntax tab
   SyntaxAnalyzer syntax = SyntaxAnalyzer(TokenSource(all_tokens));
-
   for (ProductionResult prod = syntax.readProduction(); !prod.isEmpty(); prod = syntax.readProduction())
   {
     std::for_each(std::begin(prod), std::end(prod), [&](const Production& i_sub_prod) {
       ui->mp_syntax_output->appendPlainText(i_sub_prod);
     });
   }
+
+  // to be continued...
 }

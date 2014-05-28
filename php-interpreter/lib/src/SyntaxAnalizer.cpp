@@ -24,7 +24,7 @@ ProductionResult SyntaxAnalyzer::readProduction()
   if (!m_hack)
   {
     m_hack = true;
-    return{ output("1"), output("2") };
+    return { output("1"), output("2") };
   }
   else
   {

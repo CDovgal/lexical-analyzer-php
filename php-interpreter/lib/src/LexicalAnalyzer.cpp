@@ -115,7 +115,7 @@ Token LexicalAnalyzer::next_token()
 
     if (QChar(subline[1]).isNumber())
     {
-      std::regex constexpr_str_regex("[^\w]+");
+      std::regex constexpr_str_regex("[^\\w]+");
       auto str_id_iter = std::sregex_iterator(std::begin(subline), std::end(subline), constexpr_str_regex);
       if (str_id_iter != std::sregex_iterator())
       {
@@ -136,7 +136,7 @@ Token LexicalAnalyzer::next_token()
       return Token(E_TT_IDENTIFIER, var_name.c_str(), current_token_pos());
     }
 
-    return Token(E_TT_ERROR, "wtf", current_token_pos());
+    return Token(E_TT_ERROR, "wtw", current_token_pos());
   }
 
   if (current_symbol().isLetter())
