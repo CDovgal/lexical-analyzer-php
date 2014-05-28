@@ -46,6 +46,10 @@ public:
     : Token(i_token_type, i_lexem, i_pos.first, i_pos.second)
   {}
 
+  Token(E_TOKEN_TYPE i_token_type, const QString& i_lexem)
+    : Token(i_token_type, i_lexem, TokenPosition())
+  {}
+
   E_TOKEN_TYPE m_token_type;
   QString m_lexem;
 

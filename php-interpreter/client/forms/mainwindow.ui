@@ -46,12 +46,7 @@
           </property>
           <property name="plainText">
            <string>&lt;?php
-$abc
-$1abc
-$a_a
-$
-if ($a &gt; $b)
-  echo &quot;a bigger than b&quot;;
+function abc()
 ?&gt;</string>
           </property>
          </widget>
