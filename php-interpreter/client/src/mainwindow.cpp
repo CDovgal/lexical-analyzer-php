@@ -77,6 +77,7 @@ void MainWindow::on_mp_analize_button_clicked()
 
   QVector<Token> all_tokens;
 
+#ifndef _DEBUG
   // Lexical tab
   LexicalAnalyzer lex(ui->mp_source->toPlainText());
   for (Token token; lex.nextToken(token);)
@@ -84,8 +85,16 @@ void MainWindow::on_mp_analize_button_clicked()
     add_record(token);
     all_tokens.push_back(token);
   }
+#endif
 
   // Syntax tab
+  all_tokens = { 
+    Token(E_TT_KEYWORD, QString("function"))
+  , Token(E_TT_IDENTIFIER, QString("abc"))
+  , Token(E_TT_DELIMITER, QString("("))
+//  , Token(E_TT_IDENTIFIER, "$a")
+  , Token(E_TT_DELIMITER, QString(")"))
+  };
   SyntaxAnalyzer syntax = SyntaxAnalyzer(TokenSource(all_tokens));
   for (ProductionResult prod = syntax.readProduction(); !prod.isEmpty(); prod = syntax.readProduction())
   {
