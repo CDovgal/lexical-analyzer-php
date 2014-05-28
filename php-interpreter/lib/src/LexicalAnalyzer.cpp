@@ -107,16 +107,36 @@ Token LexicalAnalyzer::next_token()
   if (current_symbol() == '$')
   {
     std::string subline = m_source_lines[m_current_line].mid(m_current_pos).toStdString();
+    if (1 == subline.length())
+    {
+      increase_pos(1); // skip $
+      return Token(E_TT_ERROR, "$", current_token_pos());
+    }
+
+    if (QChar(subline[1]).isNumber())
+    {
+      std::regex constexpr_str_regex("[^\w]+");
+      auto str_id_iter = std::sregex_iterator(std::begin(subline), std::end(subline), constexpr_str_regex);
+      if (str_id_iter != std::sregex_iterator())
+      {
+        auto error_lexem = /*"$" +*/ str_id_iter->str();
+        increase_pos(error_lexem.length());// skip $<number>
+        return Token(E_TT_ERROR, error_lexem.c_str(), current_token_pos());
+      }
+      std::terminate();
+    }
+
     auto var_id_iter = std::sregex_iterator(++std::begin(subline), std::end(subline), variable_id_regex);
     if (var_id_iter != std::sregex_iterator())
     {
       std::string var_name = var_id_iter->str();
       var_name.insert(0, "$");
       increase_pos(var_name.length());
+
       return Token(E_TT_IDENTIFIER, var_name.c_str(), current_token_pos());
     }
 
-    return Token(E_TT_ERROR, "$", current_token_pos());
+    return Token(E_TT_ERROR, "wtf", current_token_pos());
   }
 
   if (current_symbol().isLetter())

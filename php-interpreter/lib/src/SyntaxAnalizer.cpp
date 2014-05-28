@@ -93,11 +93,9 @@ bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
   if (!readDelimiter(open_round_bracket) || BRACKET_ROUND_OPEN != open_round_bracket)
     return false;
   
-  
   Delimiter close_round_bracket;
   if (!readDelimiter(close_round_bracket) || BRACKET_ROUND_CLOSE != close_round_bracket)
     return false;
-  
   
   return true;
 }
