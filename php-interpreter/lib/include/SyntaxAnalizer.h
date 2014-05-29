@@ -78,4 +78,46 @@ private:
 };
 
 #define SCOPED_DEPTH_COUNTER \
-ScopedDepthMeter scope(m_depth);
+  ScopedDepthMeter scope(m_depth);
+
+#define INFO_MESSAGE(code_key) \
+  io_production.push_back(output(code_key));
+
+#define INFO_MESSAGE_START(code_key) \
+  io_production.push_back(output(info_message_start(code_key)));
+
+#define INFO_MESSAGE_TOKEN_ENDS \
+  io_production.push_back(output(info_message_token_ends()));
+
+#define INFO_MESSAGE_FINISHED_SUCCESS(code_key) \
+  io_production.push_back(output(info_message_finished_success(code_key)));
+
+#define INFO_MESSAGE_RULE_SATISFIED(code_key_rule, code_key_token) \
+  io_production.push_back(output(info_message_rule_satisfied(code_key_rule, code_key_token)));
+
+#define INFO_MESSAGE_FINISHED_FAILED(code_key) \
+  io_production.push_back(output(info_message_finished_failed(code_key)));
+
+#define INFO_MESSAGE_WRONG_TOKEN(code_key_expected, code_key_actual) \
+  io_production.push_back(output(info_message_wrong_token(code_key_expected, code_key_actual)));
+
+#define SET_SCOPE_NAME(arg) \
+  QString SCOPE_NAME = arg;
+
+
+#define CHECK_NEXT_TOKEN \
+if (!next()) \
+{ \
+  INFO_MESSAGE(info_message_token_ends())\
+  return false; \
+}
+
+QString info_message_token_ends();
+QString info_message_start            (const QString& code_key);
+QString info_message_finished_success (const QString& code_key);
+QString info_message_rule_satisfied   (const QString& code_key_rule,
+                                       const QString& code_key_token);
+QString info_message_wrong_token      (const QString& code_key_expect, 
+                                       const QString& code_key_actual);
+QString info_message_finished_failed  (const QString& code_key);
+
