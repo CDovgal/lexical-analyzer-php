@@ -24,6 +24,8 @@ PHP_LIB_API typedef QString Variable;
 PHP_LIB_API typedef QString Delimiter;
 PHP_LIB_API typedef QString Identifier;
 
+PHP_LIB_API typedef QString Operator;
+
 class PHP_LIB_API SyntaxAnalyzer
 {
 public:
@@ -49,6 +51,9 @@ private:
   
   bool readArgument(ProductionResult& io_production, Argument& io_argument);
   bool readArgumentList(ProductionResult& io_production, ArgumentList& io_arguments_list);
+
+  bool readOperator(ProductionResult& io_production, Operator& io_operator);
+
   
   bool readVariable(Variable& io_variable);
   

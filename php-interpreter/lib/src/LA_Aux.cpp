@@ -34,7 +34,6 @@ QString KEYWORD_DEFINE      = "define";
 QString KEYWORD_INCLUDE     = "include";
 QString KEYWORD_NULL        = "NULL";
 QString KEYWORD_FUNCTION    = "function";
-QString KEYWORD_CONST       = "const";
 QString KEYWORD_RETURN      = "return";
 QString KEYWORD_FOR         = "for";
 QString KEYWORD_CONTINUE    = "continue";
@@ -192,7 +191,6 @@ static QVector<QString> ELEMENTS = {
   , KEYWORD_INCLUDE
   , KEYWORD_NULL
   , KEYWORD_FUNCTION
-  , KEYWORD_CONST
   , KEYWORD_RETURN
   , KEYWORD_FOR
   , KEYWORD_CONTINUE
