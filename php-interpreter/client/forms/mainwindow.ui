@@ -46,7 +46,7 @@
           </property>
           <property name="plainText">
            <string>&lt;?php
-function abc($a,$b)
+function abc();
 ?&gt;</string>
           </property>
          </widget>

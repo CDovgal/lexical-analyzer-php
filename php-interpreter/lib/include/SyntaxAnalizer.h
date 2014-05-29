@@ -92,6 +92,9 @@ private:
 #define INFO_MESSAGE_FINISHED_SUCCESS(code_key) \
   io_production.push_back(output(info_message_finished_success(code_key)));
 
+#define INFO_MESSAGE_DISMATCH_TOKEN(code_key) \
+  io_production.push_back(output(info_message_dismatch_token(code_key)));
+
 #define INFO_MESSAGE_RULE_SATISFIED(code_key_rule, code_key_token) \
   io_production.push_back(output(info_message_rule_satisfied(code_key_rule, code_key_token)));
 
@@ -115,6 +118,7 @@ if (!next()) \
 QString info_message_token_ends();
 QString info_message_start            (const QString& code_key);
 QString info_message_finished_success (const QString& code_key);
+QString info_message_dismatch_token   (const QString& code_key);
 QString info_message_rule_satisfied   (const QString& code_key_rule,
                                        const QString& code_key_token);
 QString info_message_wrong_token      (const QString& code_key_expect, 
