@@ -11,6 +11,7 @@
 
 #include <QMap>
 
+
 QMap<QString, int> CODE = 
     {
     { "ERROR"                     ,   0 }
@@ -191,20 +192,38 @@ bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
   readArgumentList(io_production, list);
 
   Delimiter close_round_bracket;
-  if (!readDelimiter(io_production, close_round_bracket))
+  if (!readDelimiter(io_production, close_round_bracket) || BRACKET_ROUND_CLOSE != close_round_bracket)
   {
     INFO_MESSAGE_FINISHED_FAILED("function");
     return false;
   }
+  
+  Delimiter semicolon;
+  if (readDelimiter(io_production, semicolon) && DELIMITER_SEMICOLON == semicolon)
+  {
+    INFO_MESSAGE_FINISHED_SUCCESS("function");
+    return true;
+  }
+  
+  prev();
+  
+  Delimiter open_figure_bracket;
+  if (!readDelimiter(io_production, open_figure_bracket) || BRACKET_FIGURE_OPEN != open_figure_bracket)
+  {
+      INFO_MESSAGE_FINISHED_FAILED("function");
+      return false;
+  }
+  
+  ///...
 
-  if (BRACKET_ROUND_CLOSE != close_round_bracket)
+  
+  Delimiter close_figure_bracket;
+  if (!readDelimiter(io_production, close_figure_bracket) || BRACKET_FIGURE_CLOSE != close_figure_bracket)
   {
     INFO_MESSAGE_FINISHED_FAILED("function");
     return false;
   }
-
-  // {} or ;
-
+  
   INFO_MESSAGE_FINISHED_SUCCESS("function");
 
   return true;
@@ -225,7 +244,7 @@ bool SyntaxAnalyzer::readIdentifier(ProductionResult& io_production, Identifier&
     return true;
   }
 
-  INFO_MESSAGE_FINISHED_FAILED("IDENTIFIER");
+  INFO_MESSAGE_DISMATCH_TOKEN("IDENTIFIER");
 
   prev();
   return false;
@@ -246,7 +265,7 @@ bool SyntaxAnalyzer::readDelimiter(ProductionResult& io_production, Delimiter& i
     return true;
   }
 
-  INFO_MESSAGE_FINISHED_FAILED("DELIMITER");
+  INFO_MESSAGE_DISMATCH_TOKEN("DELIMITER");
 
   prev();
   return false;
@@ -258,8 +277,10 @@ bool SyntaxAnalyzer::readArgumentList(ProductionResult& io_production, ArgumentL
 
   INFO_MESSAGE_START("ARGUMENTSLIST");
 
+  bool is_empty_list = true;
   for (Argument temp; readArgument(io_production, temp);)
   {
+    is_empty_list = false;
     Delimiter coma;
     if (readDelimiter(io_production, coma))
     {
@@ -278,7 +299,8 @@ bool SyntaxAnalyzer::readArgumentList(ProductionResult& io_production, ArgumentL
     return false;
   }
 
-  prev();
+  if(!is_empty_list)
+    prev();
   INFO_MESSAGE_FINISHED_SUCCESS("ARGUMENTSLIST");
 
   return true;
@@ -299,7 +321,7 @@ bool SyntaxAnalyzer::readArgument(ProductionResult& io_production, Argument& io_
     return true;
   }
 
-  INFO_MESSAGE_FINISHED_FAILED("ARGUMENT");
+  INFO_MESSAGE_DISMATCH_TOKEN("ARGUMENT");
 
   prev();
   return false;
@@ -320,7 +342,7 @@ bool SyntaxAnalyzer::readOperator(ProductionResult& io_production, Operator& io_
     return true;
   }
 
-  INFO_MESSAGE_FINISHED_FAILED("OPERATOR");
+  INFO_MESSAGE_DISMATCH_TOKEN("OPERATOR");
 
   prev();
   return false;
@@ -372,17 +394,27 @@ QString info_message_finished_success(const QString& code_key)
     .arg(code_key);
 }
 
+
+QString info_message_dismatch_token(const QString& code_key)
+{
+  return QString(
+  "Current token are not %1.")
+  .arg(code_key);
+}
+
 QString info_message_rule_satisfied(const QString& code_key_rule,
                                     const QString& code_key_token)
 {
-  return QString("Rule #%1 satisfied by %2 token.")
+  return QString(
+    "Rule #%1 satisfied by %2 token.")
     .arg(CODE[code_key_rule])
     .arg(code_key_token);
 }
 
 QString info_message_finished_failed(const QString& code_key)
 {
-  return QString("%1 parsing failed. Rule %2 cannot be appled. UNEXPECTED ERROR.")
+  return QString(
+    "%1 parsing failed. Rule %2 cannot be appled. UNEXPECTED ERROR.")
     .arg(code_key)
     .arg(CODE[code_key]);
 }
@@ -390,7 +422,8 @@ QString info_message_finished_failed(const QString& code_key)
 QString info_message_wrong_token(const QString& code_key_expect, 
                                  const QString& code_key_actual)
 {
-  return QString("Appling rule #%1 failed. Current token are not %2, but %3")
+  return QString(
+    "Appling rule #%1 failed. Current token are not %2, but %3")
     .arg(CODE[code_key_expect])
     .arg(code_key_expect)
     .arg(code_key_actual);

@@ -4,6 +4,8 @@
 
 #include <Token.h>
 
+class RuleHighligther;
+
 namespace Ui {
 class MainWindow;
 }
@@ -31,4 +33,6 @@ private:
     void load_source();
 
     Ui::MainWindow *ui;
+  
+    RuleHighligther* m_syntax_highlighter;
 };

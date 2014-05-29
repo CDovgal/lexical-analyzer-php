@@ -4,6 +4,7 @@
 #include <QVector>
 #include <QString>
 #include <QFile>
+#include <QSyntaxHighlighter>
 #include <algorithm>
 
 #include "LA_Aux.h"
@@ -12,10 +13,53 @@
 
 #include "TokenSource.h"
 
+class RuleHighligther : public QSyntaxHighlighter
+{
+public:
+  RuleHighligther(QTextDocument* ip_parent)
+    : QSyntaxHighlighter(ip_parent)
+  {}
+  
+  virtual void highlightBlock(const QString &text)
+  {
+    {
+      QTextCharFormat myClassFormat;
+      myClassFormat.setFontWeight(QFont::Bold);
+      myClassFormat.setForeground(Qt::blue);
+      QString pattern = "#[0-9]+";
+    
+      QRegExp expression(pattern);
+      int index = text.indexOf(expression);
+      while (index >= 0) {
+        int length = expression.matchedLength();
+        setFormat(index, length, myClassFormat);
+        index = text.indexOf(expression, index + length);
+      }
+    }
+    
+    {
+      QTextCharFormat myClassFormat;
+      myClassFormat.setFontWeight(QFont::Bold);
+      myClassFormat.setForeground(Qt::red);
+      QString pattern = "UNEXPECTED ERROR";
+      
+      QRegExp expression(pattern);
+      int index = text.indexOf(expression);
+      while (index >= 0) {
+        int length = expression.matchedLength();
+        setFormat(index, length, myClassFormat);
+        index = text.indexOf(expression, index + length);
+      }
+    }
+    
+  }
+};
+
 
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
   , ui(new Ui::MainWindow)
+  , m_syntax_highlighter(nullptr)
 {
   ui->setupUi(this);
   ui->mp_result_table->setColumnWidth(0, 154);
@@ -24,6 +68,8 @@ MainWindow::MainWindow(QWidget *parent)
   ui->mp_result_table->setColumnWidth(3, 70);
 
   showMaximized();
+  ui->mp_syntax_output->setTabStopWidth(40);
+  
 }
 
 MainWindow::~MainWindow()
@@ -94,5 +140,9 @@ void MainWindow::on_mp_analize_button_clicked()
     ui->mp_syntax_output->appendPlainText(i_sub_prod);
   });
 
+  if (nullptr != m_syntax_highlighter)
+      delete m_syntax_highlighter;
+  
+  m_syntax_highlighter = new RuleHighligther(ui->mp_syntax_output->document());
   // to be continued...
 }
