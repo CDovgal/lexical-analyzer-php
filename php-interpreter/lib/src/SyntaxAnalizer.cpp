@@ -14,6 +14,7 @@
 QMap<QString, int> CODE = 
     {
     { "ERROR"                     ,   0 }
+  , { "PROGRAM"                   ,   1 }
   , { "TAG"                       , 100 }
   , { TAG_OPEN                    , 101 }
   , { TAG_CLOSE                   , 102 }
@@ -81,6 +82,9 @@ QMap<QString, int> CODE =
   , { OPERATOR_GREATER            , 434 }
   , { OPERATOR_TERNARY_QUESTION   , 435 }
   , { OPERATOR_TERNARY_DOUBLE_DOT , 436 }
+  , { "IDENTIFIER"                , 500 }
+  , { "ARGUMENT"                  , 501 }
+  , { "ARGUMENTSLIST"             , 502 }
                                         };
 
 SyntaxAnalyzer::SyntaxAnalyzer(const TokenSource& i_token_source)
@@ -95,61 +99,52 @@ ProductionResult SyntaxAnalyzer::readProduction()
 
   readSubProduction(result);
 
-  //if (!m_hack)
-  //{
-  //  m_hack = true;
-  //  return{ output("1"), output("2") };
-  //}
-  //else
-  //{
-  //  return result;
-  //}
-
   return result;
 }
 
 void SyntaxAnalyzer::readSubProduction(ProductionResult& io_production)
 {
-  for (; next(); )
-  switch (token().m_token_type)
+  INFO_MESSAGE_START("PROGRAM");
+
+  for (; next();)
   {
-  case E_TT_NONE:
-    break;
-
-  case E_TT_TAG:
-    if (TAG_OPEN == token().m_lexem)
+    SCOPED_DEPTH_COUNTER;
+    switch (token().m_token_type)
     {
-      io_production.push_back(output(
-        "Program starts.\nRules #100 applied. Changing to the rule 101."));
+    case E_TT_NONE:
+      break;
+
+    case E_TT_TAG:
+      if (TAG_OPEN == token().m_lexem)
+      {
+        INFO_MESSAGE_START("TOKEN")
+      }
+      else
+      {
+        INFO_MESSAGE_FINISHED_SUCCESS("TOKEN")
+      }
+      break;
+
+    case E_TT_KEYWORD:
+      readKeywordProduction(io_production);
+      break;
+
+
+    default:
+      INFO_MESSAGE("Something has gone wrong.");
+      break;
     }
-
-    if (TAG_CLOSE == token().m_lexem)
-    {
-      io_production.push_back(output(
-        "Rules #100 applied successfully.\nProgram ends."));
-    }
-    break;
-
-  case E_TT_KEYWORD:
-    readKeywordProduction(io_production);
-    break;
-
-
-  default:
-    io_production.push_back(output(
-      "Something has gone wrong."));
-    break;
   }
 
+  INFO_MESSAGE_FINISHED_SUCCESS("PROGRAM")
   return;
 }
 
 bool SyntaxAnalyzer::readKeywordProduction(ProductionResult& io_production)
 {
-  SCOPED_DEPTH_COUNTER
+  SCOPED_DEPTH_COUNTER;
 
-  io_production.push_back(output(
-    "KEYWORDS STARTS. Rules #101 appling. Expect one of keyword."));
+  INFO_MESSAGE_START("KEYWORD");
 
   auto lexem = token().m_lexem;
   bool result;
@@ -161,39 +156,34 @@ bool SyntaxAnalyzer::readKeywordProduction(ProductionResult& io_production)
 
 
 
-  io_production.push_back(output(
-    "KEYWORDS STARTS. Rules #101 successfully applied."));
+  INFO_MESSAGE_FINISHED_SUCCESS("KEYWORD");
 
   return false;
 }
 
 bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
 {
-  SCOPED_DEPTH_COUNTER
+  SCOPED_DEPTH_COUNTER;
 
-  io_production.push_back(output(
-    "FUNCTION PARSING STARTS. Rules #102 appling. Read IDENTIFIER."));
+  INFO_MESSAGE_START("function");
 
   Identifier function_name;
   if (!readIdentifier(io_production, function_name))
   {
-    io_production.push_back(output(
-      "FUNCTION PARSING FAILED. Appling rules #102 failed."));
+    INFO_MESSAGE_FINISHED_FAILED("function");
     return false;
   }
   
   Delimiter open_round_bracket;
   if (!readDelimiter(io_production, open_round_bracket))
   {
-    io_production.push_back(output(
-      "FUNCTION PARSING FAILED. Appling rules #102 failed."));
+    INFO_MESSAGE_FINISHED_FAILED("function");
     return false;
   }
 
   if (BRACKET_ROUND_OPEN != open_round_bracket)
   {
-    io_production.push_back(output(
-      "FUNCTION PARSING FAILED. Rules #102 cannot be applied. Current token is DELIMITER but not (."));
+    INFO_MESSAGE_FINISHED_FAILED("function");
     return false;
   }
   
@@ -203,50 +193,39 @@ bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
   Delimiter close_round_bracket;
   if (!readDelimiter(io_production, close_round_bracket))
   {
-    io_production.push_back(output(
-      "FUNCTION PARSING FAILED. Rules #102 cannot be applied. Current token is not DELIMITER at all."));
+    INFO_MESSAGE_FINISHED_FAILED("function");
     return false;
   }
 
   if (BRACKET_ROUND_CLOSE != close_round_bracket)
   {
-    io_production.push_back(output(
-      "FUNCTION PARSING FAILED. Rules #102 cannot be applied. Current token is DELIMITER but not )."));
+    INFO_MESSAGE_FINISHED_FAILED("function");
     return false;
   }
 
   // {} or ;
 
-  io_production.push_back(output(
-    "FUNCTION PARSING FINISHED. Rules #102 successfully applied."));
+  INFO_MESSAGE_FINISHED_SUCCESS("function");
 
   return true;
 }
 
 bool SyntaxAnalyzer::readIdentifier(ProductionResult& io_production, Identifier& io_identifier)
 {
-  SCOPED_DEPTH_COUNTER
+  SCOPED_DEPTH_COUNTER;
 
-  io_production.push_back(output(
-    "IDENTIFICATOR PARSING STARTS. Rules #104 appling. Read IDENTIFIER."));
+  INFO_MESSAGE_START("IDENTIFIER");
 
-  if (!next())
-  {
-    io_production.push_back(output(
-      "Appling rules #104 failed. Tokens are ended."));
-    return false;
-  }
+  CHECK_NEXT_TOKEN;
 
   if (E_TT_IDENTIFIER == token().m_token_type)
   {
     io_identifier = token().m_lexem;
-    io_production.push_back(output(
-      "Appling rules #104. IDENTIFIER successfully read."));
+    INFO_MESSAGE_FINISHED_SUCCESS("IDENTIFIER");
     return true;
   }
 
-  io_production.push_back(output(
-    "Appling rules #104 failed. Current token are not IDENTIFIER, but " + toString(token().m_token_type)));
+  INFO_MESSAGE_FINISHED_FAILED("IDENTIFIER");
 
   prev();
   return false;
@@ -254,28 +233,20 @@ bool SyntaxAnalyzer::readIdentifier(ProductionResult& io_production, Identifier&
 
 bool SyntaxAnalyzer::readDelimiter(ProductionResult& io_production, Delimiter& io_delimiter)
 {
-  SCOPED_DEPTH_COUNTER
+  SCOPED_DEPTH_COUNTER;
 
-  io_production.push_back(output(
-    "DELIMITER PARSING STARTS. Rules #105 appling. Read DELIMITER."));
+  INFO_MESSAGE_START("DELIMITER");
 
-  if (!next())
-  {
-    io_production.push_back(output(
-      "Appling rules #105 failed. Tokens are ended."));
-    return false;
-  }
+  CHECK_NEXT_TOKEN;
 
   if (E_TT_DELIMITER == token().m_token_type)
   {
     io_delimiter = token().m_lexem;
-    io_production.push_back(output(
-      "Appling rules #105. DELIMITER successfully read."));
+    INFO_MESSAGE_FINISHED_SUCCESS("DELIMITER");
     return true;
   }
 
-  io_production.push_back(output(
-    "Appling rules #104 failed. Current token are not DELIMITER, but " + toString(token().m_token_type)));
+  INFO_MESSAGE_FINISHED_FAILED("DELIMITER");
 
   prev();
   return false;
@@ -283,76 +254,52 @@ bool SyntaxAnalyzer::readDelimiter(ProductionResult& io_production, Delimiter& i
 
 bool SyntaxAnalyzer::readArgumentList(ProductionResult& io_production, ArgumentList& io_arguments_list)
 {
-  SCOPED_DEPTH_COUNTER
+  SCOPED_DEPTH_COUNTER;
 
-  io_production.push_back(output(
-    "ARGUMENTS LIST PARSING STARTS. Rules #110 appling. Read ARGUMENTS LIST."));
+  INFO_MESSAGE_START("ARGUMENTSLIST");
 
-  bool is_first = true;
   for (Argument temp; readArgument(io_production, temp);)
   {
     Delimiter coma;
     if (readDelimiter(io_production, coma))
     {
       if (BRACKET_ROUND_CLOSE == coma)
-      {
-        prev();
-        return true;
-      }
+        break;
 
       if (DELIMITER_COMA == coma)
       {
-        io_production.push_back(output(
-          "ARGUMENTS LIST PARSING. Rules #110 appled. Delimiter is coma. OK."));
+        INFO_MESSAGE_RULE_SATISFIED("ARGUMENTSLIST", DELIMITER_COMA);
         continue;
       }
-      else
-      {
-        io_production.push_back(output(
-          "ARGUMENTS LIST PARSING FAILED. Rules can not be #110 appled. Delimiter is not coma, but" + coma));
-        prev();
-        return false;
-      }
     }
-    else
-    {
-      prev();
-      io_production.push_back(output(
-        "ARGUMENTS LIST PARSING FAILED. Rules #110 can not be appled. UNEXPECTED ERROR."));
-      return false;
-    }
+
+    prev();
+    INFO_MESSAGE_FINISHED_FAILED("ARGUMENTSLIST");
+    return false;
   }
 
-  io_production.push_back(output(
-    "ARGUMENTS LIST PARSING ENDED. Rules #110 appled."));
+  prev();
+  INFO_MESSAGE_FINISHED_SUCCESS("ARGUMENTSLIST");
 
   return true;
 }
 
 bool SyntaxAnalyzer::readArgument(ProductionResult& io_production, Argument& io_argument)
 {
-  SCOPED_DEPTH_COUNTER
+  SCOPED_DEPTH_COUNTER;
 
-  io_production.push_back(output(
-    "ARGUMENT PARSING STARTS. Rules #111 appling. Read ARGUMENT."));
+  INFO_MESSAGE_START("ARGUMENT");
 
-  if (!next())
-  {
-    io_production.push_back(output(
-      "Appling rules #111 failed. Tokens are ended."));
-    return false;
-  }
+  CHECK_NEXT_TOKEN;
 
   if (E_TT_IDENTIFIER == token().m_token_type)
   {
     io_argument = token().m_lexem;
-    io_production.push_back(output(
-      "Appling rules #111. ARGUMENT successfully read."));
+    INFO_MESSAGE_FINISHED_SUCCESS("ARGUMENT");
     return true;
   }
 
-  io_production.push_back(output(
-    "Appling rules #111 failed. Current token are not ARGUMENT, but " + toString(token().m_token_type)));
+  INFO_MESSAGE_FINISHED_FAILED("ARGUMENT");
 
   prev();
   return false;
@@ -360,28 +307,20 @@ bool SyntaxAnalyzer::readArgument(ProductionResult& io_production, Argument& io_
 
 bool SyntaxAnalyzer::readOperator(ProductionResult& io_production, Operator& io_operator)
 {
-  SCOPED_DEPTH_COUNTER
+  SCOPED_DEPTH_COUNTER;
 
-  io_production.push_back(output(
-    "OPERATOR PARSING STARTS. Rules #nnn appling. Read OPERATOR."));
+  INFO_MESSAGE_START("OPERATOR");
 
-  if (!next())
-  {
-    io_production.push_back(output(
-      "Appling rules #nnn failed. Tokens are ended."));
-    return false;
-  }
+  CHECK_NEXT_TOKEN;
 
-  if (E_TT_IDENTIFIER == token().m_token_type)
+  if (E_TT_OPERATOR == token().m_token_type)
   {
     io_operator = token().m_lexem;
-    io_production.push_back(output(
-      "Appling rules #nnn. OPERATOR successfully read."));
+    INFO_MESSAGE_FINISHED_SUCCESS("OPERATOR");
     return true;
   }
 
-  io_production.push_back(output(
-    "Appling rules #111 failed. Current token are not OPERATOR, but " + toString(token().m_token_type)));
+  INFO_MESSAGE_FINISHED_FAILED("OPERATOR");
 
   prev();
   return false;
@@ -410,4 +349,49 @@ QString SyntaxAnalyzer::output(QString&& str)
 QString SyntaxAnalyzer::output(const QString& str)
 {
   return QString(m_depth, '\t') + str;
+}
+
+QString info_message_token_ends()
+{
+  return "Appling rule failed. Tokens are ended.";
+}
+
+QString info_message_start(const QString& code_key)
+{
+  return QString(
+    "%1 parsing starts. Rule #%2 ready to apply.")
+    .arg(code_key)
+    .arg(CODE[code_key]);
+}
+
+QString info_message_finished_success(const QString& code_key)
+{
+  return QString(
+    "Rule #%1 applied. %2 successfully read.")
+    .arg(CODE[code_key])
+    .arg(code_key);
+}
+
+QString info_message_rule_satisfied(const QString& code_key_rule,
+                                    const QString& code_key_token)
+{
+  return QString("Rule #%1 satisfied by %2 token.")
+    .arg(CODE[code_key_rule])
+    .arg(code_key_token);
+}
+
+QString info_message_finished_failed(const QString& code_key)
+{
+  return QString("%1 parsing failed. Rule %2 cannot be appled. UNEXPECTED ERROR.")
+    .arg(code_key)
+    .arg(CODE[code_key]);
+}
+
+QString info_message_wrong_token(const QString& code_key_expect, 
+                                 const QString& code_key_actual)
+{
+  return QString("Appling rule #%1 failed. Current token are not %2, but %3")
+    .arg(CODE[code_key_expect])
+    .arg(code_key_expect)
+    .arg(code_key_actual);
 }
