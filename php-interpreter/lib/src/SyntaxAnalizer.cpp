@@ -9,6 +9,80 @@
 #include "SyntaxAnalizer.h"
 #include "LA_Aux.h"
 
+#include <QMap>
+
+QMap<QString, int> CODE = 
+    {
+    { "ERROR"                     ,   0 }
+  , { "TAG"                       , 100 }
+  , { TAG_OPEN                    , 101 }
+  , { TAG_CLOSE                   , 102 }
+  , { "KEYWORD"                   , 200 }
+  , { KEYWORD_DEFINE              , 201 }
+  , { KEYWORD_INCLUDE             , 202 }
+  , { KEYWORD_NULL                , 203 }
+  , { KEYWORD_FUNCTION            , 204 }
+  , { KEYWORD_RETURN              , 205 }
+  , { KEYWORD_FOR                 , 206 }
+  , { KEYWORD_CONTINUE            , 207 }
+  , { KEYWORD_BREAK               , 208 }
+  , { KEYWORD_IF                  , 209 }
+  , { KEYWORD_ELSE_IF             , 210 }
+  , { KEYWORD_ELSE                , 211 }
+  , { KEYWORD_SWICTH              , 212 }
+  , { KEYWORD_CASE                , 213 }
+  , { KEYWORD_DEFAULT             , 214 }
+  , { KEYWORD_ENDSWITCH           , 215 }
+  , { KEYWORD_ECHO                , 216 }
+  , { "DELIMITER"                 , 300 }
+  , { BRACKET_ROUND_OPEN          , 301 }
+  , { BRACKET_ROUND_CLOSE         , 302 }
+  , { BRACKET_SQUARE_OPEN         , 303 }
+  , { BRACKET_SQUARE_CLOSE        , 304 }
+  , { BRACKET_FIGURE_OPEN         , 305 }
+  , { BRACKET_FIGURE_CLOSE        , 306 }
+  , { DELIMITER_SEMICOLON         , 307 }
+  , { DELIMITER_DOT               , 308 }
+  , { DELIMITER_COMA              , 309 }
+  , { "OPERATOR"                  , 400 }
+  , { OPERATOR_LOGICAL_AND        , 401 }
+  , { OPERATOR_LOGICAL_XOR        , 402 }
+  , { OPERATOR_IDENTICAL          , 403 }
+  , { OPERATOR_NOT_IDENTICAL      , 404 }
+  , { OPERATOR_LOGICAL_OR         , 405 }
+  , { OPERATOR_EQUAL              , 406 }
+  , { OPERATOR_NOT_EQUAL_         , 407 }
+  , { OPERATOR_NOT_EQUAL_BRACKET  , 408 }
+  , { OPERATOR_AND                , 409 }
+  , { OPERATOR_OR                 , 410 }
+  , { OPERATOR_SHIFT_LEFT         , 411 }
+  , { OPERATOR_SHIFT_RIGHT        , 412 }
+  , { OPERATOR_LESS_OR_EQUAL      , 413 }
+  , { OPERATOR_GREATER_OR_EQUAL   , 414 }
+  , { OPERATOR_INCREMENT          , 415 }
+  , { OPERATOR_DECREMENT          , 416 }
+  , { OPERATOR_ASSIGNMENT_PLUS    , 417 }
+  , { OPERATOR_ASSIGNMENT_MINUS   , 418 }
+  , { OPERATOR_ASSIGNMENT_MULTIPLY, 419 }
+  , { OPERATOR_ASSIGNMENT_DIVISION, 420 }
+  , { OPERATOR_ASSIGNMENT_MOD2    , 421 }
+  , { OPERATOR_NOT                , 422 }
+  , { OPERATOR_ASSIGNMENT         , 423 }
+  , { OPERATOR_PLUS               , 424 }
+  , { OPERATOR_MINUS              , 425 }
+  , { OPERATOR_MULTIPLY           , 426 }
+  , { OPERATOR_DIVISION           , 427 }
+  , { OPERATOR_PERCENTAGE         , 428 }
+  , { OPERATOR_BIT_AND            , 429 }
+  , { OPERATOR_BIT_OR             , 430 }
+  , { OPERATOR_BIT_XOR            , 431 }
+  , { OPERATOR_BIT_NOT            , 432 }
+  , { OPERATOR_LESS               , 433 }
+  , { OPERATOR_GREATER            , 434 }
+  , { OPERATOR_TERNARY_QUESTION   , 435 }
+  , { OPERATOR_TERNARY_DOUBLE_DOT , 436 }
+                                        };
+
 SyntaxAnalyzer::SyntaxAnalyzer(const TokenSource& i_token_source)
   : m_source(i_token_source)
   , m_depth(0)
@@ -279,6 +353,35 @@ bool SyntaxAnalyzer::readArgument(ProductionResult& io_production, Argument& io_
 
   io_production.push_back(output(
     "Appling rules #111 failed. Current token are not ARGUMENT, but " + toString(token().m_token_type)));
+
+  prev();
+  return false;
+}
+
+bool SyntaxAnalyzer::readOperator(ProductionResult& io_production, Operator& io_operator)
+{
+  SCOPED_DEPTH_COUNTER
+
+  io_production.push_back(output(
+    "OPERATOR PARSING STARTS. Rules #nnn appling. Read OPERATOR."));
+
+  if (!next())
+  {
+    io_production.push_back(output(
+      "Appling rules #nnn failed. Tokens are ended."));
+    return false;
+  }
+
+  if (E_TT_IDENTIFIER == token().m_token_type)
+  {
+    io_operator = token().m_lexem;
+    io_production.push_back(output(
+      "Appling rules #nnn. OPERATOR successfully read."));
+    return true;
+  }
+
+  io_production.push_back(output(
+    "Appling rules #111 failed. Current token are not OPERATOR, but " + toString(token().m_token_type)));
 
   prev();
   return false;
