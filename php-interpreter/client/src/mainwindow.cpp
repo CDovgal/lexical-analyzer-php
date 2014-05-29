@@ -12,6 +12,7 @@
 
 #include "TokenSource.h"
 
+
 MainWindow::MainWindow(QWidget *parent)
   : QMainWindow(parent)
   , ui(new Ui::MainWindow)
@@ -21,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
   ui->mp_result_table->setColumnWidth(1, 200);
   ui->mp_result_table->setColumnWidth(2, 70);
   ui->mp_result_table->setColumnWidth(3, 70);
+
+  showMaximized();
 }
 
 MainWindow::~MainWindow()
@@ -77,7 +80,6 @@ void MainWindow::on_mp_analize_button_clicked()
 
   QVector<Token> all_tokens;
 
-#ifndef _DEBUG
   // Lexical tab
   LexicalAnalyzer lex(ui->mp_source->toPlainText());
   for (Token token; lex.nextToken(token);)
@@ -85,23 +87,12 @@ void MainWindow::on_mp_analize_button_clicked()
     add_record(token);
     all_tokens.push_back(token);
   }
-#endif
 
-  // Syntax tab
-  all_tokens = { 
-    Token(E_TT_KEYWORD, QString("function"))
-  , Token(E_TT_IDENTIFIER, QString("abc"))
-  , Token(E_TT_DELIMITER, QString("("))
-//  , Token(E_TT_IDENTIFIER, "$a")
-  , Token(E_TT_DELIMITER, QString(")"))
-  };
   SyntaxAnalyzer syntax = SyntaxAnalyzer(TokenSource(all_tokens));
-  for (ProductionResult prod = syntax.readProduction(); !prod.isEmpty(); prod = syntax.readProduction())
-  {
-    std::for_each(std::begin(prod), std::end(prod), [&](const Production& i_sub_prod) {
-      ui->mp_syntax_output->appendPlainText(i_sub_prod);
-    });
-  }
+  ProductionResult prod = syntax.readProduction();
+  std::for_each(std::begin(prod), std::end(prod), [&](const Production& i_sub_prod) {
+    ui->mp_syntax_output->appendPlainText(i_sub_prod);
+  });
 
   // to be continued...
 }
