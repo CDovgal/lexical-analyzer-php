@@ -22,8 +22,10 @@ PHP_LIB_API bool isConstExpr(const QString& i_str);
 PHP_LIB_API bool isIdentifier(const QString& i_str);
  
 /////////////////////////////////////////////
-// SEMICOLON
-extern QString SEMICOLON;
+// DELIMITERS
+extern QString DELIMITER_SEMICOLON;
+extern QString DELIMITER_DOT;
+extern QString DELIMITER_COMA;
 /////////////////////////////////////////////
 
 /////////////////////////////////////////////
@@ -106,8 +108,6 @@ extern QString OPERATOR_BIT_XOR;
 extern QString OPERATOR_BIT_NOT;
 extern QString OPERATOR_LESS;
 extern QString OPERATOR_GREATER;
-extern QString OPERATOR_DOT;
-extern QString OPERATOR_COMA;
 extern QString OPERATOR_TERNARY_QUESTION;
 extern QString OPERATOR_TERNARY_DOUBLE_DOT;
 ////////////////////////////////////////////
