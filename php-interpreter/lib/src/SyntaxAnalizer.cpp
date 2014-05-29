@@ -36,22 +36,23 @@ ProductionResult SyntaxAnalyzer::readProduction()
 
 void SyntaxAnalyzer::readSubProduction(ProductionResult& io_production)
 {
+  for (; next(); )
   switch (token().m_token_type)
   {
   case E_TT_NONE:
-    return;
+    break;
 
   case E_TT_TAG:
     if (TAG_OPEN == token().m_lexem)
     {
       io_production.push_back(output(
-        "Program starts. Rules #100 applied. Changing to the rule 101.\n"));
+        "Program starts.\nRules #100 applied. Changing to the rule 101."));
     }
 
     if (TAG_CLOSE == token().m_lexem)
     {
       io_production.push_back(output(
-        "Program ends. Rules #100 applied.\n"));
+        "Rules #100 applied successfully.\nProgram ends."));
     }
     break;
 
@@ -71,179 +72,216 @@ void SyntaxAnalyzer::readSubProduction(ProductionResult& io_production)
 
 bool SyntaxAnalyzer::readKeywordProduction(ProductionResult& io_production)
 {
-  SCOPED_DEPTH_METER
+  SCOPED_DEPTH_COUNTER
 
   io_production.push_back(output(
-    "KEYWORDS STARTS. Rules #101 applied. Expect one of keyword.\n"));
+    "KEYWORDS STARTS. Rules #101 appling. Expect one of keyword."));
 
   auto lexem = token().m_lexem;
+  bool result;
 
   if (KEYWORD_FUNCTION == lexem)
   {
-    return readFunction(io_production);
+    result = readFunction(io_production);
   }
 
 
 
+  io_production.push_back(output(
+    "KEYWORDS STARTS. Rules #101 successfully applied."));
 
   return false;
 }
 
 bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
 {
-  SCOPED_DEPTH_METER
+  SCOPED_DEPTH_COUNTER
 
   io_production.push_back(output(
-    "FUNCTION STARTS. Rules #102 applied. Read IDENTIFIER.\n"));
+    "FUNCTION PARSING STARTS. Rules #102 appling. Read IDENTIFIER."));
 
   Identifier function_name;
-  if (!readIdentifier(function_name))
-    return false;
-  
-  Delimiter open_round_bracket;
-  if (!readDelimiter(open_round_bracket))
+  if (!readIdentifier(io_production, function_name))
   {
     io_production.push_back(output(
-      "FUNCTION PARSING FAILED. Rules #102 cannot be applied. Current token is not IDENTIFIER.\n"));
+      "FUNCTION PARSING FAILED. Appling rules #102 failed."));
+    return false;
+  }
+  
+  Delimiter open_round_bracket;
+  if (!readDelimiter(io_production, open_round_bracket))
+  {
+    io_production.push_back(output(
+      "FUNCTION PARSING FAILED. Appling rules #102 failed."));
     return false;
   }
 
   if (BRACKET_ROUND_OPEN != open_round_bracket)
   {
     io_production.push_back(output(
-      "FUNCTION PARSING FAILED. Rules #102 cannot be applied. Current token is IDENTIFIER but not (.\n"));
+      "FUNCTION PARSING FAILED. Rules #102 cannot be applied. Current token is DELIMITER but not (."));
     return false;
   }
   
   ArgumentList list;
-  readArgumentList(list);
+  readArgumentList(io_production, list);
 
   Delimiter close_round_bracket;
-  if (!readDelimiter(close_round_bracket))
+  if (!readDelimiter(io_production, close_round_bracket))
   {
     io_production.push_back(output(
-      "FUNCTION PARSING FAILED. Rules #102 cannot be applied. Current token is not IDENTIFIER.\n"));
+      "FUNCTION PARSING FAILED. Rules #102 cannot be applied. Current token is not DELIMITER at all."));
     return false;
   }
 
   if (BRACKET_ROUND_CLOSE != close_round_bracket)
   {
     io_production.push_back(output(
-      "FUNCTION PARSING FAILED. Rules #102 cannot be applied. Current token is IDENTIFIER but not ).\n"));
+      "FUNCTION PARSING FAILED. Rules #102 cannot be applied. Current token is DELIMITER but not )."));
     return false;
   }
 
   // {} or ;
 
+  io_production.push_back(output(
+    "FUNCTION PARSING FINISHED. Rules #102 successfully applied."));
+
   return true;
 }
 
-bool SyntaxAnalyzer::readIdentifier(Identifier& io_identifier)
+bool SyntaxAnalyzer::readIdentifier(ProductionResult& io_production, Identifier& io_identifier)
 {
-  SCOPED_DEPTH_METER
+  SCOPED_DEPTH_COUNTER
+
+  io_production.push_back(output(
+    "IDENTIFICATOR PARSING STARTS. Rules #104 appling. Read IDENTIFIER."));
 
   if (!next())
+  {
+    io_production.push_back(output(
+      "Appling rules #104 failed. Tokens are ended."));
     return false;
+  }
 
   if (E_TT_IDENTIFIER == token().m_token_type)
   {
     io_identifier = token().m_lexem;
+    io_production.push_back(output(
+      "Appling rules #104. IDENTIFIER successfully read."));
     return true;
   }
+
+  io_production.push_back(output(
+    "Appling rules #104 failed. Current token are not IDENTIFIER, but " + toString(token().m_token_type)));
 
   prev();
   return false;
 }
 
-//bool SyntaxAnalyzer::readIdentifier(ProductionResult& io_production)
-//{
-//  SCOPED_DEPTH_METER
-//
-//  io_production.push_back(output(
-//    "IDENTIFIER STARTS. Rules #103 ready to apply. Expect IDENTIFIER."));
-//
-//  if (!next())
-//  {
-//    io_production.push_back(output(
-//      "UNEXPECTED END OF LEXEMS. RETURN OUT\n"));
-//    return false;
-//  }
-//
-//  if (E_TT_IDENTIFIER == token().m_token_type)
-//  {
-//    auto lexem = token().m_lexem;
-//    io_production.push_back(output(
-//      "IDENTIFIER STARTS. Rules #102 applied successfully. Result: " + lexem + "\n"));
-//    return true;
-//  }
-//
-//  io_production.push_back(output(
-//    "UNEXPECTED ERROR. SyntaxAnalyzer::readIdentifier. RETURN OUT.\n"));
-//  return false;
-//}
-
-bool SyntaxAnalyzer::readDelimiter(Delimiter& io_delimiter)
+bool SyntaxAnalyzer::readDelimiter(ProductionResult& io_production, Delimiter& io_delimiter)
 {
-  SCOPED_DEPTH_METER
+  SCOPED_DEPTH_COUNTER
+
+  io_production.push_back(output(
+    "DELIMITER PARSING STARTS. Rules #105 appling. Read DELIMITER."));
 
   if (!next())
+  {
+    io_production.push_back(output(
+      "Appling rules #105 failed. Tokens are ended."));
     return false;
+  }
 
   if (E_TT_DELIMITER == token().m_token_type)
   {
     io_delimiter = token().m_lexem;
+    io_production.push_back(output(
+      "Appling rules #105. DELIMITER successfully read."));
     return true;
   }
+
+  io_production.push_back(output(
+    "Appling rules #104 failed. Current token are not DELIMITER, but " + toString(token().m_token_type)));
 
   prev();
   return false;
 }
 
-//bool SyntaxAnalyzer::readDelimiter(ProductionResult& io_production)
-//{
-//  SCOPED_DEPTH_METER
-//
-//  io_production.push_back(output(
-//    "IDENTIFIER STARTS. Rules #102 ready to apply. Expect DELIMITER.\n"));
-//
-//  if (!next())
-//  {
-//    io_production.push_back(output(
-//      "UNEXPECTED END OF LEXEMS. RETURN OUT\n"));
-//    return false;
-//  }
-//
-//  if (E_TT_DELIMITER == token().m_token_type)
-//  {
-//    auto lexem = token().m_lexem;
-//    io_production.push_back(output(
-//      "IDENTIFIER STARTS. Rules #102 applied successfully. Result: " + lexem + "\n"));
-//    return true;
-//  }
-//
-//  io_production.push_back(output(
-//    "UNEXPECTED ERROR. SyntaxAnalyzer::readDelimiter. RETURN OUT.\n"));
-//  return false;
-//}
-
-bool SyntaxAnalyzer::readArgumentList(ArgumentList& io_arguments_list)
+bool SyntaxAnalyzer::readArgumentList(ProductionResult& io_production, ArgumentList& io_arguments_list)
 {
-  SCOPED_DEPTH_METER
+  SCOPED_DEPTH_COUNTER
 
-  for (Argument temp; readArgument(temp);)
+  io_production.push_back(output(
+    "ARGUMENTS LIST PARSING STARTS. Rules #110 appling. Read ARGUMENTS LIST."));
+
+  bool is_first = true;
+  for (Argument temp; readArgument(io_production, temp);)
   {
     Delimiter coma;
-    if (!readDelimiter(coma) || OPERATOR_COMA != coma)
+    if (readDelimiter(io_production, coma))
+    {
+      if (BRACKET_ROUND_CLOSE == coma)
+      {
+        prev();
+        return true;
+      }
+
+      if (OPERATOR_COMA == coma)
+      {
+        io_production.push_back(output(
+          "ARGUMENTS LIST PARSING. Rules #110 appled. Delimiter is coma. OK."));
+        continue;
+      }
+      else
+      {
+        io_production.push_back(output(
+          "ARGUMENTS LIST PARSING FAILED. Rules can not be #110 appled. Delimiter is not coma, but" + coma));
+        prev();
+        return false;
+      }
+    }
+    else
+    {
+      prev();
+      io_production.push_back(output(
+        "ARGUMENTS LIST PARSING FAILED. Rules #110 can not be appled. UNEXPECTED ERROR."));
       return false;
+    }
   }
 
-  prev();
+  io_production.push_back(output(
+    "ARGUMENTS LIST PARSING ENDED. Rules #110 appled."));
+
   return true;
 }
 
-bool SyntaxAnalyzer::readArgument(Argument& io_argument)
+bool SyntaxAnalyzer::readArgument(ProductionResult& io_production, Argument& io_argument)
 {
-  return readIdentifier(io_argument);
+  SCOPED_DEPTH_COUNTER
+
+  io_production.push_back(output(
+    "ARGUMENT PARSING STARTS. Rules #111 appling. Read ARGUMENT."));
+
+  if (!next())
+  {
+    io_production.push_back(output(
+      "Appling rules #111 failed. Tokens are ended."));
+    return false;
+  }
+
+  if (E_TT_IDENTIFIER == token().m_token_type)
+  {
+    io_argument = token().m_lexem;
+    io_production.push_back(output(
+      "Appling rules #111. ARGUMENT successfully read."));
+    return true;
+  }
+
+  io_production.push_back(output(
+    "Appling rules #111 failed. Current token are not ARGUMENT, but " + toString(token().m_token_type)));
+
+  prev();
+  return false;
 }
 
 const Token* SyntaxAnalyzer::next()

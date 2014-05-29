@@ -24,8 +24,6 @@ PHP_LIB_API typedef QString Variable;
 PHP_LIB_API typedef QString Delimiter;
 PHP_LIB_API typedef QString Identifier;
 
-enum SA_State : int;
-
 class PHP_LIB_API SyntaxAnalyzer
 {
 public:
@@ -45,14 +43,12 @@ private:
   
   bool readFunction(ProductionResult& io_production);
   
-  bool readIdentifier(Identifier& io_production);
-//  bool readIdentifier(ProductionResult& io_production);
+  bool readIdentifier(ProductionResult& io_production, Identifier& io_identifier);
   
-  bool readDelimiter(Delimiter& io_delimiter);
-//  bool readDelimiter(ProductionResult& io_delimiter);
+  bool readDelimiter(ProductionResult& io_production, Delimiter& io_delimiter);
   
-  bool readArgument(Argument& io_argument);
-  bool readArgumentList(ArgumentList& io_arguments_list);
+  bool readArgument(ProductionResult& io_production, Argument& io_argument);
+  bool readArgumentList(ProductionResult& io_production, ArgumentList& io_arguments_list);
   
   bool readVariable(Variable& io_variable);
   
@@ -76,5 +72,5 @@ private:
   bool m_hack;
 };
 
-#define SCOPED_DEPTH_METER \
+#define SCOPED_DEPTH_COUNTER \
 ScopedDepthMeter scope(m_depth);

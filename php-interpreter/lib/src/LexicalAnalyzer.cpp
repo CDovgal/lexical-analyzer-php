@@ -86,7 +86,7 @@ Token LexicalAnalyzer::next_token()
     auto str_id_iter = std::sregex_iterator(std::begin(subline), std::end(subline), constexpr_str_regex);
     if (str_id_iter != std::sregex_iterator())
     {
-      increase_pos(str_id_iter->str().length());
+      increase_pos(static_cast<int>(str_id_iter->str().length()));
       return Token(E_TT_CONSTEXPR, str_id_iter->str().c_str(), current_token_pos());
     }
   }
@@ -98,7 +98,7 @@ Token LexicalAnalyzer::next_token()
     auto str_id_iter = std::sregex_iterator(std::begin(subline), std::end(subline), constexpr_str_regex);
     if (str_id_iter != std::sregex_iterator())
     {
-      increase_pos(str_id_iter->str().length());
+      increase_pos(static_cast<int>(str_id_iter->str().length()));
       return Token(E_TT_CONSTEXPR, str_id_iter->str().c_str(), current_token_pos());
     }
   }
@@ -119,8 +119,8 @@ Token LexicalAnalyzer::next_token()
       auto str_id_iter = std::sregex_iterator(std::begin(subline), std::end(subline), constexpr_str_regex);
       if (str_id_iter != std::sregex_iterator())
       {
-        auto error_lexem = /*"$" +*/ str_id_iter->str();
-        increase_pos(error_lexem.length());// skip $<number>
+        auto error_lexem = str_id_iter->str();
+        increase_pos(static_cast<int>(error_lexem.length()));// skip $<number>
         return Token(E_TT_ERROR, error_lexem.c_str(), current_token_pos());
       }
       std::terminate();
@@ -131,7 +131,7 @@ Token LexicalAnalyzer::next_token()
     {
       std::string var_name = var_id_iter->str();
       var_name.insert(0, "$");
-      increase_pos(var_name.length());
+      increase_pos(static_cast<int>(var_name.length()));
 
       return Token(E_TT_IDENTIFIER, var_name.c_str(), current_token_pos());
     }

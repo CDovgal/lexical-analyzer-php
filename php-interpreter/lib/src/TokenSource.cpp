@@ -10,7 +10,7 @@
 
 TokenSource::TokenSource(const QVector<Token>& i_tokens)
   : m_tokens(i_tokens)
-  , m_current(0)
+  , m_current(-1)
 {}
 
 const Token* TokenSource::next()
