@@ -23,7 +23,9 @@ QString BRACKET_SQUARE_OPEN   = "[";
 QString BRACKET_SQUARE_CLOSE  = "(";
 QString BRACKET_FIGURE_OPEN   = "{";
 QString BRACKET_FIGURE_CLOSE  = "}";
-QString SEMICOLON             = ";";
+QString DELIMITER_SEMICOLON   = ";";
+QString DELIMITER_DOT         = ".";
+QString DELIMITER_COMA        = ",";
 ////////////////////////////////////////////
 
 /////////////////////////////////////////////
@@ -83,8 +85,6 @@ QString OPERATOR_BIT_XOR              = "^";
 QString OPERATOR_BIT_NOT              = "~";
 QString OPERATOR_LESS                 = "<";
 QString OPERATOR_GREATER              = ">";
-QString OPERATOR_DOT                  = ".";
-QString OPERATOR_COMA                 = ",";
 QString OPERATOR_TERNARY_QUESTION     = "?";
 QString OPERATOR_TERNARY_DOUBLE_DOT   = ":";
 ////////////////////////////////////////////
@@ -108,7 +108,9 @@ static QVector<QString> DELIMITERS = {
   , BRACKET_SQUARE_CLOSE
   , BRACKET_FIGURE_OPEN
   , BRACKET_FIGURE_CLOSE
-  , SEMICOLON
+  , DELIMITER_SEMICOLON
+  , DELIMITER_DOT
+  , DELIMITER_COMA
 };
 
 static QVector<QString> KEYWORDS = {
@@ -116,7 +118,6 @@ static QVector<QString> KEYWORDS = {
   , KEYWORD_INCLUDE
   , KEYWORD_NULL
   , KEYWORD_FUNCTION
-//  , KEYWORD_CONST
   , KEYWORD_RETURN
   , KEYWORD_FOR
   , KEYWORD_CONTINUE
@@ -165,8 +166,6 @@ static QVector<QString> OPERATORS = {
   , OPERATOR_BIT_NOT
   , OPERATOR_LESS
   , OPERATOR_GREATER
-  , OPERATOR_DOT
-  , OPERATOR_COMA
   , OPERATOR_TERNARY_QUESTION
   , OPERATOR_TERNARY_DOUBLE_DOT
 };
@@ -185,6 +184,9 @@ static QVector<QString> ELEMENTS = {
   , BRACKET_SQUARE_CLOSE
   , BRACKET_FIGURE_OPEN
   , BRACKET_FIGURE_CLOSE
+  , DELIMITER_SEMICOLON
+  , DELIMITER_DOT
+  , DELIMITER_COMA
 
   , KEYWORD_DEFINE
   , KEYWORD_INCLUDE
@@ -237,8 +239,6 @@ static QVector<QString> ELEMENTS = {
   , OPERATOR_BIT_NOT
   , OPERATOR_LESS
   , OPERATOR_GREATER
-  , OPERATOR_DOT
-  , OPERATOR_COMA
   , OPERATOR_TERNARY_QUESTION
   , OPERATOR_TERNARY_DOUBLE_DOT
 };

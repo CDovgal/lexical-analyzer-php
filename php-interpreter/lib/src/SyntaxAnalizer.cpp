@@ -226,7 +226,7 @@ bool SyntaxAnalyzer::readArgumentList(ProductionResult& io_production, ArgumentL
         return true;
       }
 
-      if (OPERATOR_COMA == coma)
+      if (DELIMITER_COMA == coma)
       {
         io_production.push_back(output(
           "ARGUMENTS LIST PARSING. Rules #110 appled. Delimiter is coma. OK."));
