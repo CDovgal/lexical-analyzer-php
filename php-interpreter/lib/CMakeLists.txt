@@ -37,7 +37,10 @@ add_library(
 qt5_use_modules(${PHP_LIB_NAME} Widgets)
 
 
-if(${CMAKE_SYSTEM_NAME} NOT MATCHES "Darwin")
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+
+  else()
+
   install(TARGETS ${PHP_LIB_NAME}
       RUNTIME
       DESTINATION bin/${CMAKE_BUILD_TYPE}
