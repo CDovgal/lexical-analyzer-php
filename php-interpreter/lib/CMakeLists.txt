@@ -36,17 +36,20 @@ add_library(
 
 qt5_use_modules(${PHP_LIB_NAME} Widgets)
 
-install(TARGETS ${PHP_LIB_NAME}
-    RUNTIME
-    DESTINATION bin/${CMAKE_BUILD_TYPE}
-)
 
-file(
-	GLOB 
-	qt5_runtime_root
-	${CMAKE_CURRENT_SOURCE_DIR}/../../externals/qt5runtime/${EX_PLATFORM_NAME}/${CMAKE_BUILD_TYPE}/*.dll
-)
+if(${CMAKE_SYSTEM_NAME} NOT MATCHES "Darwin")
+  install(TARGETS ${PHP_LIB_NAME}
+      RUNTIME
+      DESTINATION bin/${CMAKE_BUILD_TYPE}
+  )
 
-install(FILES ${qt5_runtime_root}
-    DESTINATION bin/${CMAKE_BUILD_TYPE}
-)
+  file(
+  	GLOB 
+  	qt5_runtime_root
+  	${CMAKE_CURRENT_SOURCE_DIR}/../../externals/qt5runtime/${EX_PLATFORM_NAME}/${CMAKE_BUILD_TYPE}/*.dll
+  )
+
+  install(FILES ${qt5_runtime_root}
+      DESTINATION bin/${CMAKE_BUILD_TYPE}
+  )
+endif()
