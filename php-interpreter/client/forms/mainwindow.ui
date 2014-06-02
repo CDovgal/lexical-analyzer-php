@@ -131,7 +131,7 @@ return $var + 1;
         <item row="0" column="0">
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>1</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -191,6 +191,57 @@ return $var + 1;
             </item>
            </layout>
           </widget>
+          <widget class="QWidget" name="tab_3">
+           <property name="toolTip">
+            <string>Semantic analysis</string>
+           </property>
+           <attribute name="title">
+            <string>Semantic analysis</string>
+           </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QTableWidget" name="mp_semantic_result">
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
+              <property name="editTriggers">
+               <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <attribute name="horizontalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <attribute name="verticalHeaderDefaultSectionSize">
+               <number>20</number>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>Tocken class</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Lexem</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Row</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Column</string>
+               </property>
+              </column>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -205,7 +256,7 @@ return $var + 1;
      <x>0</x>
      <y>0</y>
      <width>962</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

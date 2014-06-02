@@ -23,7 +23,7 @@ static const TokensArray tokensarray_source_1 =
   , Token(E_TT_KEYWORD,     "define",               6, 0)
   , Token(E_TT_DELIMITER,   "(",                    6, 6)
   , Token(E_TT_CONSTEXPR,  R"("MAX")",              6, 7)
-  , Token(E_TT_OPERATOR,    ",",                    6, 12)
+  , Token(E_TT_DELIMITER,   ",",                    6, 12)
   , Token(E_TT_CONSTEXPR,   "15.1",                 6, 14)
   , Token(E_TT_DELIMITER,   ")",                    6, 18)
   , Token(E_TT_DELIMITER,   ";",                    6, 19)

@@ -10,6 +10,7 @@
 #include "LA_Aux.h"
 #include "LexicalAnalyzer.h"
 #include "SyntaxAnalizer.h"
+#include "SemanticAnalyzer.h"
 
 #include "TokenSource.h"
 
