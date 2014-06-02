@@ -41,7 +41,7 @@ QString KEYWORD_BREAK       = "break";
 QString KEYWORD_IF          = "if";
 QString KEYWORD_ELSE_IF     = "elseif";
 QString KEYWORD_ELSE        = "else";
-QString KEYWORD_SWICTH      = "switch";
+QString KEYWORD_SWITCH      = "switch";
 QString KEYWORD_CASE        = "case";
 QString KEYWORD_DEFAULT     = "default";
 QString KEYWORD_ENDSWITCH   = "endswitch";
@@ -123,7 +123,7 @@ static QVector<QString> KEYWORDS = {
   , KEYWORD_BREAK
   , KEYWORD_IF
   , KEYWORD_ELSE
-  , KEYWORD_SWICTH
+  , KEYWORD_SWITCH
   , KEYWORD_CASE
   , KEYWORD_DEFAULT
   , KEYWORD_ENDSWITCH
@@ -197,7 +197,7 @@ static QVector<QString> ELEMENTS = {
   , KEYWORD_BREAK
   , KEYWORD_IF
   , KEYWORD_ELSE
-  , KEYWORD_SWICTH
+  , KEYWORD_SWITCH
   , KEYWORD_CASE
   , KEYWORD_DEFAULT
   , KEYWORD_ENDSWITCH

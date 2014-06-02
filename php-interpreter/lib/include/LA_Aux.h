@@ -64,7 +64,7 @@ extern QString KEYWORD_BREAK;
 extern QString KEYWORD_IF;
 extern QString KEYWORD_ELSE_IF;
 extern QString KEYWORD_ELSE;
-extern QString KEYWORD_SWICTH;
+extern QString KEYWORD_SWITCH;
 extern QString KEYWORD_CASE;
 extern QString KEYWORD_DEFAULT;
 extern QString KEYWORD_ENDSWITCH;
