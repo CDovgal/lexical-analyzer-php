@@ -310,7 +310,108 @@ bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
 
 bool SyntaxAnalyzer::readIf(ProductionResult& io_production)
 {
-  return false;
+  SCOPED_DEPTH_COUNTER;
+
+  INFO_MESSAGE_START("if");
+
+  Delimiter open_round_bracket;
+  if (!readDelimiter(io_production, open_round_bracket) || BRACKET_ROUND_OPEN != open_round_bracket)
+  {
+    INFO_MESSAGE_FINISHED_FAILED("if");
+    return false;
+  }
+
+  ConstExpr constexpR;
+  Identifier identifier;
+  if (readConstExpr(io_production, constexpR))
+  {
+    INFO_MESSAGE_RULE_SATISFIED("CONSTEXPRESSION", constexpR);
+  }
+  else if (readIdentifier(io_production, identifier))
+  {
+    INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", identifier);
+  }
+  else
+  {
+    INFO_MESSAGE_DISMATCH_TOKEN("CONSTEXPRESSION");
+    INFO_MESSAGE_DISMATCH_TOKEN("IDENTIFIER");
+    INFO_MESSAGE_FINISHED_FAILED("EXPRESSION");
+    return false;
+  }
+
+  Operator operation;
+  if (readOperator(io_production, operation))
+  {
+    INFO_MESSAGE_RULE_SATISFIED("OPERATOR", operation);
+
+    ConstExpr constexpR;
+    Identifier identifier;
+    if (readConstExpr(io_production, constexpR))
+    {
+      INFO_MESSAGE_RULE_SATISFIED("CONSTEXPRESSION", constexpR);
+    }
+    else if (readIdentifier(io_production, identifier))
+    {
+      INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", identifier);
+    }
+    else
+    {
+      INFO_MESSAGE_DISMATCH_TOKEN("CONSTEXPRESSION");
+      INFO_MESSAGE_DISMATCH_TOKEN("IDENTIFIER");
+      INFO_MESSAGE_FINISHED_FAILED("EXPRESSION");
+      return false;
+    }
+  }
+
+  Delimiter close_round_bracket;
+  if (!readDelimiter(io_production, close_round_bracket) || BRACKET_ROUND_CLOSE != close_round_bracket)
+  {
+    INFO_MESSAGE_FINISHED_FAILED("if");
+    return false;
+  }
+
+  Delimiter open_figure_bracket;
+  if (!readDelimiter(io_production, open_figure_bracket) || BRACKET_FIGURE_OPEN != open_figure_bracket)
+  {
+    INFO_MESSAGE_FINISHED_FAILED("if");
+    return false;
+  }
+
+  readSubProduction(io_production);
+
+  Delimiter close_figure_bracket;
+  if (!readDelimiter(io_production, close_figure_bracket) || BRACKET_FIGURE_CLOSE != close_figure_bracket)
+  {
+    INFO_MESSAGE_FINISHED_FAILED("if");
+    return false;
+  }
+
+  Keyword keyword_else;
+  if (readKeyword(io_production, keyword_else))
+  {
+    if (KEYWORD_ELSE == keyword_else)
+    {
+      Delimiter open_figure_bracket;
+      if (!readDelimiter(io_production, open_figure_bracket) || BRACKET_FIGURE_OPEN != open_figure_bracket)
+      {
+        INFO_MESSAGE_FINISHED_FAILED("if");
+        return false;
+      }
+
+      readSubProduction(io_production);
+
+      Delimiter close_figure_bracket;
+      if (!readDelimiter(io_production, close_figure_bracket) || BRACKET_FIGURE_CLOSE != close_figure_bracket)
+      {
+        INFO_MESSAGE_FINISHED_FAILED("if");
+        return false;
+      }
+    }
+    prev();
+  }
+
+  INFO_MESSAGE_FINISHED_SUCCESS("if");
+  return true;
 }
 
 bool SyntaxAnalyzer::readFor(ProductionResult& io_production)
