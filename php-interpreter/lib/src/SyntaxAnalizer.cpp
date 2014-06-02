@@ -423,31 +423,39 @@ bool SyntaxAnalyzer::readExpression(ProductionResult& io_production)
 
   INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", token().m_lexem);
 
-  Operator operation;
-  if (!readOperator(io_production, operation))//  E_TT_OPERATOR != token().m_token_type)
+  bool is_ok = true;
+  for (; is_ok;)
   {
-    INFO_MESSAGE_DISMATCH_TOKEN("OPERATOR");
-    return false;
-  }
+    Operator operation;
+    if (!readOperator(io_production, operation))//  E_TT_OPERATOR != token().m_token_type)
+    {
+      INFO_MESSAGE_DISMATCH_TOKEN("OPERATOR");
+      is_ok = false;
+//      prev();
+      break;
+    }
 
-  INFO_MESSAGE_RULE_SATISFIED("OPERATOR", token().m_lexem);
+    INFO_MESSAGE_RULE_SATISFIED("OPERATOR", token().m_lexem);
 
-  ConstExpr constexpR;
-  Identifier identifier;
-  if (readConstExpr(io_production, constexpR))
-  {
-    INFO_MESSAGE_RULE_SATISFIED("CONSTEXPRESSION", constexpR);
-  } 
-  else if (readIdentifier(io_production, identifier))
-  {
-    INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", identifier);
-  }
-  else
-  {
-    INFO_MESSAGE_DISMATCH_TOKEN("CONSTEXPRESSION");
-    INFO_MESSAGE_DISMATCH_TOKEN("IDENTIFIER");
-    INFO_MESSAGE_FINISHED_FAILED("EXPRESSION");
-    return false;
+    ConstExpr constexpR;
+    Identifier identifier;
+    if (readConstExpr(io_production, constexpR))
+    {
+      INFO_MESSAGE_RULE_SATISFIED("CONSTEXPRESSION", constexpR);
+    }
+    else if (readIdentifier(io_production, identifier))
+    {
+      INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", identifier);
+    }
+    else
+    {
+      INFO_MESSAGE_DISMATCH_TOKEN("CONSTEXPRESSION");
+      INFO_MESSAGE_DISMATCH_TOKEN("IDENTIFIER");
+      INFO_MESSAGE_FINISHED_FAILED("EXPRESSION");
+      is_ok = false;
+//      prev();
+      break;
+    }
   }
 
   Delimiter semicolon;
