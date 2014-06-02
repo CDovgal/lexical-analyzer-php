@@ -133,12 +133,20 @@ void SyntaxAnalyzer::readSubProduction(ProductionResult& io_production)
       break;
 
     case E_TT_KEYWORD:
-      readKeywordProduction(io_production);
-      break;
+      if (KEYWORD_FUNCTION  == token().m_lexem ||
+          KEYWORD_FOR       == token().m_lexem ||
+          KEYWORD_IF        == token().m_lexem ||
+          KEYWORD_SWITCH    == token().m_lexem)
+      {
+        readKeywordProduction(io_production);
+        break;
+      }
+      prev();
+      return;
 
     case E_TT_IDENTIFIER:
       readExpression(io_production);
-      if (m_state == E_SA_SUBREAD)
+      if (E_SA_SUBREAD == m_state)
         return;
       break;
 
@@ -240,8 +248,54 @@ bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
       return false;
   }
   
-  //expression
   readSubProduction(io_production);
+
+  Keyword keyword_return;
+  if (readKeyword(io_production, keyword_return) && KEYWORD_RETURN == keyword_return)
+  {
+    INFO_MESSAGE_RULE_SATISFIED("function", "return");
+    
+    bool is_ok = true;
+    for (; is_ok;)
+    {
+      ConstExpr constexpR;
+      Identifier identifier;
+      if (readConstExpr(io_production, constexpR))
+      {
+        INFO_MESSAGE_RULE_SATISFIED("CONSTEXPRESSION", constexpR);
+      }
+      else if (readIdentifier(io_production, identifier))
+      {
+        INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", identifier);
+      }
+      else
+      {
+        INFO_MESSAGE_DISMATCH_TOKEN("CONSTEXPRESSION");
+        INFO_MESSAGE_DISMATCH_TOKEN("IDENTIFIER");
+      }
+
+      Operator operation;
+      Delimiter semicolon;
+      if (readOperator(io_production, operation))
+      {
+        INFO_MESSAGE_RULE_SATISFIED("OPERATOR", operation);
+      }
+      else if (readDelimiter(io_production, semicolon) || DELIMITER_SEMICOLON == semicolon)
+      {
+        is_ok = false;
+        INFO_MESSAGE_RULE_SATISFIED("DELIMITER", ";");
+        break;
+      }
+      else 
+      {
+        INFO_MESSAGE_DISMATCH_TOKEN(";");
+        INFO_MESSAGE_FINISHED_FAILED("function");
+        return false;
+        is_ok = false;
+        break;
+      }
+    }
+  }
   
   Delimiter close_figure_bracket;
   if (!readDelimiter(io_production, close_figure_bracket) || BRACKET_FIGURE_CLOSE != close_figure_bracket)
@@ -266,6 +320,27 @@ bool SyntaxAnalyzer::readFor(ProductionResult& io_production)
 
 bool SyntaxAnalyzer::readSwitch(ProductionResult& io_production)
 {
+  return false;
+}
+
+bool SyntaxAnalyzer::readKeyword(ProductionResult& io_production, Keyword& io_keyword)
+{
+  SCOPED_DEPTH_COUNTER;
+
+  INFO_MESSAGE_START("KEYWORD");
+
+  CHECK_NEXT_TOKEN;
+
+  if (E_TT_KEYWORD == token().m_token_type)
+  {
+    io_keyword = token().m_lexem;
+    INFO_MESSAGE_FINISHED_SUCCESS("KEYWORD");
+    return true;
+  }
+
+  INFO_MESSAGE_DISMATCH_TOKEN("KEYWORD");
+
+  prev();
   return false;
 }
 
@@ -427,11 +502,10 @@ bool SyntaxAnalyzer::readExpression(ProductionResult& io_production)
   for (; is_ok;)
   {
     Operator operation;
-    if (!readOperator(io_production, operation))//  E_TT_OPERATOR != token().m_token_type)
+    if (!readOperator(io_production, operation))
     {
       INFO_MESSAGE_DISMATCH_TOKEN("OPERATOR");
       is_ok = false;
-//      prev();
       break;
     }
 
@@ -453,7 +527,6 @@ bool SyntaxAnalyzer::readExpression(ProductionResult& io_production)
       INFO_MESSAGE_DISMATCH_TOKEN("IDENTIFIER");
       INFO_MESSAGE_FINISHED_FAILED("EXPRESSION");
       is_ok = false;
-//      prev();
       break;
     }
   }
