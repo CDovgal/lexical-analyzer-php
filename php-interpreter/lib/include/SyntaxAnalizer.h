@@ -20,11 +20,15 @@ PHP_LIB_API typedef QStringList ProductionResult;
 PHP_LIB_API typedef QString     Argument;
 PHP_LIB_API typedef QStringList ArgumentList;
 
-PHP_LIB_API typedef QString Variable;
-PHP_LIB_API typedef QString Delimiter;
-PHP_LIB_API typedef QString Identifier;
+PHP_LIB_API typedef QString     Variable;
+PHP_LIB_API typedef QString     Delimiter;
+PHP_LIB_API typedef QString     Identifier;
 
-PHP_LIB_API typedef QString Operator;
+PHP_LIB_API typedef QString     ConstExpr;
+
+PHP_LIB_API typedef QString     Operator;
+
+enum E_SA_STATE : int;
 
 class PHP_LIB_API SyntaxAnalyzer
 {
@@ -44,6 +48,12 @@ private:
   bool readKeywordProduction(ProductionResult& io_production);
   
   bool readFunction(ProductionResult& io_production);
+
+  bool readIf(ProductionResult& io_production);
+
+  bool readFor(ProductionResult& io_production);
+
+  bool readSwitch(ProductionResult& io_production);
   
   bool readIdentifier(ProductionResult& io_production, Identifier& io_identifier);
   
@@ -53,7 +63,9 @@ private:
   bool readArgumentList(ProductionResult& io_production, ArgumentList& io_arguments_list);
 
   bool readOperator(ProductionResult& io_production, Operator& io_operator);
+  bool readConstExpr(ProductionResult& io_production, ConstExpr& io_constexpr);
 
+  bool readExpression(ProductionResult& io_production);
   
   bool readVariable(Variable& io_variable);
   
@@ -75,6 +87,8 @@ private:
   int m_depth;
 
   bool m_hack;
+
+  E_SA_STATE m_state;
 };
 
 #define SCOPED_DEPTH_COUNTER \
@@ -100,6 +114,8 @@ private:
 
 #define INFO_MESSAGE_FINISHED_FAILED(code_key) \
   io_production.push_back(output(info_message_finished_failed(code_key)));
+
+// add prev();?
 
 #define INFO_MESSAGE_WRONG_TOKEN(code_key_expected, code_key_actual) \
   io_production.push_back(output(info_message_wrong_token(code_key_expected, code_key_actual)));

@@ -11,6 +11,12 @@
 
 #include <QMap>
 
+enum E_SA_STATE : int
+{
+    E_SA_NOT_INIT = 0
+  , E_SA_TAG
+  , E_SA_SUBREAD
+};
 
 QMap<QString, int> CODE = 
     {
@@ -31,7 +37,7 @@ QMap<QString, int> CODE =
   , { KEYWORD_IF                  , 209 }
   , { KEYWORD_ELSE_IF             , 210 }
   , { KEYWORD_ELSE                , 211 }
-  , { KEYWORD_SWICTH              , 212 }
+  , { KEYWORD_SWITCH              , 212 }
   , { KEYWORD_CASE                , 213 }
   , { KEYWORD_DEFAULT             , 214 }
   , { KEYWORD_ENDSWITCH           , 215 }
@@ -130,6 +136,11 @@ void SyntaxAnalyzer::readSubProduction(ProductionResult& io_production)
       readKeywordProduction(io_production);
       break;
 
+    case E_TT_IDENTIFIER:
+      readExpression(io_production);
+      if (m_state == E_SA_SUBREAD)
+        return;
+      break;
 
     default:
       INFO_MESSAGE("Something has gone wrong.");
@@ -150,15 +161,30 @@ bool SyntaxAnalyzer::readKeywordProduction(ProductionResult& io_production)
   auto lexem = token().m_lexem;
   bool result;
 
+  m_state = E_SA_SUBREAD;
+
   if (KEYWORD_FUNCTION == lexem)
   {
     result = readFunction(io_production);
   }
 
+  if (KEYWORD_IF == lexem)
+  {
+    result = readIf(io_production);
+  }
 
+  if (KEYWORD_FOR == lexem)
+  {
+    result = readFor(io_production);
+  }
+
+  if (KEYWORD_SWITCH == lexem)
+  {
+    result = readSwitch(io_production);
+  }
 
   INFO_MESSAGE_FINISHED_SUCCESS("KEYWORD");
-
+  m_state = E_SA_TAG;
   return false;
 }
 
@@ -214,8 +240,8 @@ bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
       return false;
   }
   
-  ///...
-
+  //expression
+  readSubProduction(io_production);
   
   Delimiter close_figure_bracket;
   if (!readDelimiter(io_production, close_figure_bracket) || BRACKET_FIGURE_CLOSE != close_figure_bracket)
@@ -225,8 +251,22 @@ bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
   }
   
   INFO_MESSAGE_FINISHED_SUCCESS("function");
-
   return true;
+}
+
+bool SyntaxAnalyzer::readIf(ProductionResult& io_production)
+{
+  return false;
+}
+
+bool SyntaxAnalyzer::readFor(ProductionResult& io_production)
+{
+  return false;
+}
+
+bool SyntaxAnalyzer::readSwitch(ProductionResult& io_production)
+{
+  return false;
 }
 
 bool SyntaxAnalyzer::readIdentifier(ProductionResult& io_production, Identifier& io_identifier)
@@ -348,6 +388,81 @@ bool SyntaxAnalyzer::readOperator(ProductionResult& io_production, Operator& io_
   return false;
 }
 
+bool SyntaxAnalyzer::readConstExpr(ProductionResult& io_production, ConstExpr& io_constexpr)
+{
+  SCOPED_DEPTH_COUNTER;
+
+  INFO_MESSAGE_START("CONSTEXPR");
+
+  CHECK_NEXT_TOKEN;
+
+  if (E_TT_CONSTEXPR == token().m_token_type)
+  {
+    io_constexpr = token().m_lexem;
+    INFO_MESSAGE_FINISHED_SUCCESS("CONSTEXPR");
+    return true;
+  }
+
+  INFO_MESSAGE_DISMATCH_TOKEN("CONSTEXPR");
+
+  prev();
+  return false;
+}
+
+bool SyntaxAnalyzer::readExpression(ProductionResult& io_production)
+{
+  SCOPED_DEPTH_COUNTER;
+
+  INFO_MESSAGE_START("EXPRESSION");
+
+  if (E_TT_IDENTIFIER != token().m_token_type)
+  {
+    INFO_MESSAGE_DISMATCH_TOKEN("IDENTIFIER");
+    return false;
+  }
+
+  INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", token().m_lexem);
+
+  Operator operation;
+  if (!readOperator(io_production, operation))//  E_TT_OPERATOR != token().m_token_type)
+  {
+    INFO_MESSAGE_DISMATCH_TOKEN("OPERATOR");
+    return false;
+  }
+
+  INFO_MESSAGE_RULE_SATISFIED("OPERATOR", token().m_lexem);
+
+  ConstExpr constexpR;
+  Identifier identifier;
+  if (readConstExpr(io_production, constexpR))
+  {
+    INFO_MESSAGE_RULE_SATISFIED("CONSTEXPRESSION", constexpR);
+  } 
+  else if (readIdentifier(io_production, identifier))
+  {
+    INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", identifier);
+  }
+  else
+  {
+    INFO_MESSAGE_DISMATCH_TOKEN("CONSTEXPRESSION");
+    INFO_MESSAGE_DISMATCH_TOKEN("IDENTIFIER");
+    INFO_MESSAGE_FINISHED_FAILED("EXPRESSION");
+    return false;
+  }
+
+  Delimiter semicolon;
+  if (!readDelimiter(io_production, semicolon) || DELIMITER_SEMICOLON != semicolon)
+  {
+    INFO_MESSAGE_DISMATCH_TOKEN("DELIMITER");
+    INFO_MESSAGE_FINISHED_FAILED("EXPRESSION");
+    return false;
+  }
+
+  INFO_MESSAGE_FINISHED_SUCCESS("EXPRESSION");
+
+  return true;
+}
+
 const Token* SyntaxAnalyzer::next()
 {
   return m_source.next();
@@ -414,7 +529,7 @@ QString info_message_rule_satisfied(const QString& code_key_rule,
 QString info_message_finished_failed(const QString& code_key)
 {
   return QString(
-    "%1 parsing failed. Rule %2 cannot be appled. UNEXPECTED ERROR.")
+    "%1 parsing failed. Rule #%2 cannot be appled. UNEXPECTED ERROR.")
     .arg(code_key)
     .arg(CODE[code_key]);
 }
