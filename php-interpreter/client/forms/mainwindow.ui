@@ -44,11 +44,22 @@
             <pointsize>10</pointsize>
            </font>
           </property>
+          <property name="mouseTracking">
+           <bool>true</bool>
+          </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOn</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOn</enum>
+          </property>
           <property name="plainText">
            <string>&lt;?php
-function abc()
+
+$var = 1;
+function increment($var)
 {
-$a = 2;
+return $var + 1;
 }
 ?&gt;</string>
           </property>

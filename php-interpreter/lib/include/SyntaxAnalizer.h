@@ -27,6 +27,7 @@ PHP_LIB_API typedef QString     Identifier;
 PHP_LIB_API typedef QString     ConstExpr;
 
 PHP_LIB_API typedef QString     Operator;
+PHP_LIB_API typedef QString     Keyword;
 
 enum E_SA_STATE : int;
 
@@ -68,6 +69,8 @@ private:
   bool readExpression(ProductionResult& io_production);
   
   bool readVariable(Variable& io_variable);
+
+  bool readKeyword(ProductionResult& io_production, Keyword& io_keyword);
   
   QString output(QString&& str);
   QString output(const QString& str);
