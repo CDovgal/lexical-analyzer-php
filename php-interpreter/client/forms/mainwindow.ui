@@ -55,6 +55,14 @@
           </property>
           <property name="plainText">
            <string>&lt;?php
+if($var &gt; 0)
+{
+$var = $var - 1;
+}
+else
+{
+$var = $var + 1;
+}
 
 $var = 1;
 function increment($var)

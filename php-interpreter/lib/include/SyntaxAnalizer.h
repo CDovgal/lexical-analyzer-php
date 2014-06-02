@@ -118,8 +118,6 @@ private:
 #define INFO_MESSAGE_FINISHED_FAILED(code_key) \
   io_production.push_back(output(info_message_finished_failed(code_key)));
 
-// add prev();?
-
 #define INFO_MESSAGE_WRONG_TOKEN(code_key_expected, code_key_actual) \
   io_production.push_back(output(info_message_wrong_token(code_key_expected, code_key_actual)));
 
