@@ -8,10 +8,17 @@
 
 #pragma once
 
-#include "LexicalAnalyzer.h"
+#include "TokenSource.h"
+
 
 class SemanticAnalysis
 {
 public:
-  SemanticAnalysis();
+  SemanticAnalysis(const TokenSource& i_token_iter);
+
+  SemanticResult result();
+
+private:
+  TokenSource m_source;
 };
+

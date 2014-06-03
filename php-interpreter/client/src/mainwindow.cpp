@@ -171,6 +171,11 @@ void MainWindow::on_mp_analize_button_clicked()
   
   m_syntax_highlighter = new RuleHighligther(ui->mp_syntax_output->document());
 
-  add_semantic_record(Token(E_TT_IDENTIFIER, "$a", 1, 2), 0);
+  SemanticAnalysis semantic = SemanticAnalysis(TokenSource(all_tokens));
+  auto semantic_result = semantic.result();
+  std::for_each(std::begin(semantic_result), std::end(semantic_result), [&](const SemanticResultEntity& i_result) {
+    add_semantic_record(i_result.first, i_result.second);
+  });
+  
   // to be continued...
 }
