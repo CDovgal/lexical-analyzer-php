@@ -90,24 +90,12 @@ void MainWindow::add_syntax_record(const Token& i_token)
   ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 3, new QTableWidgetItem(QString::number(i_token.m_column)));
 }
 
-void MainWindow::add_semantic_record(const Token& i_token, int i_level)
+void MainWindow::add_semantic_record(const Token& i_token, const QString& i_init_type, int i_level)
 {
   ui->mp_semantic_result->setRowCount(ui->mp_semantic_result->rowCount() + 1);
 
   ui->mp_semantic_result->setItem(ui->mp_semantic_result->rowCount() - 1, 0, new QTableWidgetItem(i_token.m_lexem));
-
-  QString init_type = "Unknown";
-  if (i_token.m_lexem[0] == '\'' || 
-      i_token.m_lexem[0] == '"')
-      init_type = "Const string expression";
-  else if (i_token.m_lexem.indexOf('.') != -1)
-    init_type = "Const double expression";
-  else if (i_token.m_lexem[0].isDigit())
-    init_type = "Const integer expression";
-  else
-    init_type = "Const boolean expression";
-
-  ui->mp_semantic_result->setItem(ui->mp_semantic_result->rowCount() - 1, 1, new QTableWidgetItem(init_type));
+  ui->mp_semantic_result->setItem(ui->mp_semantic_result->rowCount() - 1, 1, new QTableWidgetItem(i_init_type));
   ui->mp_semantic_result->setItem(ui->mp_semantic_result->rowCount() - 1, 2, new QTableWidgetItem(QString::number(i_level)));
 }
 
@@ -174,7 +162,7 @@ void MainWindow::on_mp_analize_button_clicked()
   SemanticAnalysis semantic = SemanticAnalysis(TokenSource(all_tokens));
   auto semantic_result = semantic.result();
   std::for_each(std::begin(semantic_result), std::end(semantic_result), [&](const SemanticResultEntity& i_result) {
-    add_semantic_record(i_result.first, i_result.second);
+    add_semantic_record(std::get<0>(i_result), std::get<1>(i_result), std::get<2>(i_result));
   });
   
   // to be continued...
