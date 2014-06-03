@@ -21,7 +21,7 @@ public:
 private slots:
 
     void add_syntax_record(const Token& i_token);
-    void add_semantic_record(const Token& i_token, int i_level);
+    void add_semantic_record(const Token& i_token, const QString& i_init_type, int i_level);
 
     void on_mp_sourcefile_path_returnPressed();
 

@@ -10,8 +10,7 @@
 
 #include "TokenSource.h"
 
-
-class SemanticAnalysis
+class PHP_LIB_API SemanticAnalysis
 {
 public:
   SemanticAnalysis(const TokenSource& i_token_iter);
@@ -19,6 +18,10 @@ public:
   SemanticResult result();
 
 private:
+  const Token* next();
+  Token  token() const;
+  const Token* prev();
+
   TokenSource m_source;
 };
 

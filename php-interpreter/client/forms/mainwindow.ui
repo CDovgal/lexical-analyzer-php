@@ -55,6 +55,15 @@
           </property>
           <property name="plainText">
            <string>&lt;?php
+$var = 1;
+
+$a = $b;
+
+{
+  $c = &quot;c&quot;;
+  $d = $c;
+}
+
 if($var &gt; 0)
 {
 $var = $var - 1;
@@ -131,7 +140,7 @@ return $var + 1;
         <item row="0" column="0">
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>3</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -219,7 +228,7 @@ return $var + 1;
               </column>
               <column>
                <property name="text">
-                <string>Init type</string>
+                <string>Init value</string>
                </property>
               </column>
               <column>

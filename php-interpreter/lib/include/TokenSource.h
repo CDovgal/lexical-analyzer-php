@@ -10,10 +10,10 @@
 
 #include "Token.h"
 
-#include <QPair>
+#include <tuple>
 #include <QVector>
 
-typedef QPair<Token, int> SemanticResultEntity;
+typedef std::tuple<Token, QString, int> SemanticResultEntity;
 typedef QVector<SemanticResultEntity> SemanticResult;
 
 class PHP_LIB_API TokenSource
