@@ -20,7 +20,8 @@ public:
 
 private slots:
 
-    void add_record(const Token& i_token);
+    void add_syntax_record(const Token& i_token);
+    void add_semantic_record(const Token& i_token, int i_level);
 
     void on_mp_sourcefile_path_returnPressed();
 

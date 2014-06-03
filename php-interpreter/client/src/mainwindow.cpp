@@ -68,9 +68,11 @@ MainWindow::MainWindow(QWidget *parent)
   ui->mp_result_table->setColumnWidth(2, 70);
   ui->mp_result_table->setColumnWidth(3, 70);
 
+  ui->mp_semantic_result->setColumnWidth(0, 200);
+  ui->mp_semantic_result->setColumnWidth(1, 200);
+
   showMaximized();
   ui->mp_syntax_output->setTabStopWidth(40);
-  
 }
 
 MainWindow::~MainWindow()
@@ -78,7 +80,7 @@ MainWindow::~MainWindow()
   delete ui;
 }
 
-void MainWindow::add_record(const Token& i_token)
+void MainWindow::add_syntax_record(const Token& i_token)
 {
   ui->mp_result_table->setRowCount(ui->mp_result_table->rowCount() + 1);
 
@@ -86,6 +88,27 @@ void MainWindow::add_record(const Token& i_token)
   ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 1, new QTableWidgetItem(i_token.m_lexem));
   ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 2, new QTableWidgetItem(QString::number(i_token.m_row)));
   ui->mp_result_table->setItem(ui->mp_result_table->rowCount() - 1, 3, new QTableWidgetItem(QString::number(i_token.m_column)));
+}
+
+void MainWindow::add_semantic_record(const Token& i_token, int i_level)
+{
+  ui->mp_semantic_result->setRowCount(ui->mp_semantic_result->rowCount() + 1);
+
+  ui->mp_semantic_result->setItem(ui->mp_semantic_result->rowCount() - 1, 0, new QTableWidgetItem(i_token.m_lexem));
+
+  QString init_type = "Unknown";
+  if (i_token.m_lexem[0] == '\'' || 
+      i_token.m_lexem[0] == '"')
+      init_type = "Const string expression";
+  else if (i_token.m_lexem.indexOf('.') != -1)
+    init_type = "Const double expression";
+  else if (i_token.m_lexem[0].isDigit())
+    init_type = "Const integer expression";
+  else
+    init_type = "Const boolean expression";
+
+  ui->mp_semantic_result->setItem(ui->mp_semantic_result->rowCount() - 1, 1, new QTableWidgetItem(init_type));
+  ui->mp_semantic_result->setItem(ui->mp_semantic_result->rowCount() - 1, 2, new QTableWidgetItem(QString::number(i_level)));
 }
 
 void MainWindow::load_source()
@@ -124,6 +147,8 @@ void MainWindow::on_mp_analize_button_clicked()
 {
   ui->mp_result_table->setRowCount(0);
   ui->mp_syntax_output->clear();
+  ui->mp_semantic_result->setRowCount(0);
+  ui->mp_output_code_generation->clear();
 
   QVector<Token> all_tokens;
 
@@ -131,7 +156,7 @@ void MainWindow::on_mp_analize_button_clicked()
   LexicalAnalyzer lex(ui->mp_source->toPlainText());
   for (Token token; lex.nextToken(token);)
   {
-    add_record(token);
+    add_syntax_record(token);
     all_tokens.push_back(token);
   }
 
@@ -145,5 +170,7 @@ void MainWindow::on_mp_analize_button_clicked()
       delete m_syntax_highlighter;
   
   m_syntax_highlighter = new RuleHighligther(ui->mp_syntax_output->document());
+
+  add_semantic_record(Token(E_TT_IDENTIFIER, "$a", 1, 2), 0);
   // to be continued...
 }
