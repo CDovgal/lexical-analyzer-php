@@ -131,7 +131,7 @@ return $var + 1;
         <item row="0" column="0">
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>2</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -148,9 +148,6 @@ return $var + 1;
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>
               </property>
-              <attribute name="horizontalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
               <attribute name="verticalHeaderVisible">
                <bool>false</bool>
               </attribute>
@@ -209,9 +206,6 @@ return $var + 1;
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>
               </property>
-              <attribute name="horizontalHeaderVisible">
-               <bool>false</bool>
-              </attribute>
               <attribute name="verticalHeaderVisible">
                <bool>false</bool>
               </attribute>
@@ -220,25 +214,30 @@ return $var + 1;
               </attribute>
               <column>
                <property name="text">
-                <string>Tocken class</string>
+                <string>Variable name</string>
                </property>
               </column>
               <column>
                <property name="text">
-                <string>Lexem</string>
+                <string>Init type</string>
                </property>
               </column>
               <column>
                <property name="text">
-                <string>Row</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Column</string>
+                <string>Layer</string>
                </property>
               </column>
              </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_4">
+           <attribute name="title">
+            <string>Code generation</string>
+           </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QPlainTextEdit" name="mp_output_code_generation"/>
             </item>
            </layout>
           </widget>
@@ -256,7 +255,7 @@ return $var + 1;
      <x>0</x>
      <y>0</y>
      <width>962</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
