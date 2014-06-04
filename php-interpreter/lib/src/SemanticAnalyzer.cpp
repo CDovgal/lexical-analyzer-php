@@ -55,6 +55,10 @@ SemanticResult SemanticAnalysis::result()
         continue;
       }
     }
+    else if (var_to_assign.m_token_type == E_TT_IDENTIFIER)
+    {
+      result.push_back(std::make_tuple(var_to_assign, "function", level));
+    }
   }
 
   return result;
