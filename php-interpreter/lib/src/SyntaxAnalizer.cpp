@@ -725,3 +725,8 @@ QString info_message_wrong_token(const QString& code_key_expect,
     .arg(code_key_expect)
     .arg(code_key_actual);
 }
+
+TriadesContainer SyntaxAnalyzer::triades() const
+{
+  return m_triades;
+}
