@@ -74,6 +74,10 @@ SemanticResult SemanticAnalysis::result()
       var_names.insert(0, QString::number(arg_count) + " function arguments: ");
       result.push_back(std::make_tuple(var_to_assign, var_names, level));
     }
+    else
+    {
+      next();
+    }
   }
 
   return result;

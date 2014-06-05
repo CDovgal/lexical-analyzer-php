@@ -73,6 +73,8 @@ private:
   bool readVariable(Variable& io_variable);
 
   bool readKeyword(ProductionResult& io_production, Keyword& io_keyword);
+
+  bool readCallFunc(ProductionResult& io_production);
   
   QString output(QString&& str);
   QString output(const QString& str);
