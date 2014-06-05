@@ -462,35 +462,40 @@ bool SyntaxAnalyzer::readFor(ProductionResult& io_production)
   Delimiter open_round_bracket;
   if (!readDelimiter(io_production, open_round_bracket) || BRACKET_ROUND_OPEN != open_round_bracket)
   {
-    INFO_MESSAGE_FINISHED_FAILED("for");
+    //INFO_MESSAGE_FINISHED_FAILED("for");
     return false;
   }
   //
+  readExpression(io_production);
   Delimiter semicolon1;
   if (!readDelimiter(io_production, semicolon1) || DELIMITER_SEMICOLON != semicolon1)
   {
-    INFO_MESSAGE_FINISHED_FAILED("for");
+    //INFO_MESSAGE_FINISHED_FAILED("for");
     return false;
   }
   //
+  
+  readExpression(io_production);
   Delimiter semicolon2;
   if (!readDelimiter(io_production, semicolon2) || DELIMITER_SEMICOLON != semicolon2)
   {
-    INFO_MESSAGE_FINISHED_FAILED("for");
+    //INFO_MESSAGE_FINISHED_FAILED("for");
     return false;
   }
   //
+  
+  readExpression(io_production);
   Delimiter close_round_bracket;
   if (!readDelimiter(io_production, close_round_bracket) || BRACKET_ROUND_CLOSE != close_round_bracket)
   {
-    INFO_MESSAGE_FINISHED_FAILED("for");
+    //INFO_MESSAGE_FINISHED_FAILED("for");
     return false;
   }
 
   Delimiter open_figure_bracket;
   if (!readDelimiter(io_production, open_figure_bracket) || BRACKET_FIGURE_OPEN != open_figure_bracket)
   {
-    INFO_MESSAGE_FINISHED_FAILED("for");
+    //INFO_MESSAGE_FINISHED_FAILED("for");
     return false;
   }
   
@@ -499,7 +504,7 @@ bool SyntaxAnalyzer::readFor(ProductionResult& io_production)
   Delimiter close_figure_bracket;
   if (!readDelimiter(io_production, close_figure_bracket) || BRACKET_FIGURE_CLOSE != close_figure_bracket)
   {
-    INFO_MESSAGE_FINISHED_FAILED("for");
+    //INFO_MESSAGE_FINISHED_FAILED("for");
     return false;
   }
 
