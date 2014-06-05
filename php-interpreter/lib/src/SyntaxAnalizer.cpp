@@ -589,6 +589,8 @@ bool SyntaxAnalyzer::readExpression(ProductionResult& io_production)
 {
   SCOPED_DEPTH_COUNTER;
 
+  Triade triade = std::make_tuple(QString(), QString(), QString());
+
   INFO_MESSAGE_START("EXPRESSION");
 
   if (E_TT_IDENTIFIER != token().m_token_type)
@@ -596,7 +598,7 @@ bool SyntaxAnalyzer::readExpression(ProductionResult& io_production)
     INFO_MESSAGE_DISMATCH_TOKEN("IDENTIFIER");
     return false;
   }
-
+  std::get<2>(triade) = token().m_lexem;
   INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", token().m_lexem);
 
   bool is_ok = true;
@@ -611,16 +613,19 @@ bool SyntaxAnalyzer::readExpression(ProductionResult& io_production)
     }
 
     INFO_MESSAGE_RULE_SATISFIED("OPERATOR", token().m_lexem);
+    std::get<0>(triade) = operation;
 
     ConstExpr constexpR;
     Identifier identifier;
     if (readConstExpr(io_production, constexpR))
     {
       INFO_MESSAGE_RULE_SATISFIED("CONSTEXPRESSION", constexpR);
+      std::get<1>(triade) = constexpR;
     }
     else if (readIdentifier(io_production, identifier))
     {
       INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", identifier);
+      std::get<1>(triade) = identifier;
     }
     else
     {
@@ -641,7 +646,7 @@ bool SyntaxAnalyzer::readExpression(ProductionResult& io_production)
   }
 
   INFO_MESSAGE_FINISHED_SUCCESS("EXPRESSION");
-
+  m_triades.push_back(triade);
   return true;
 }
 
