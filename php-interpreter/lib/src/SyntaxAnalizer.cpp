@@ -145,6 +145,16 @@ void SyntaxAnalyzer::readSubProduction(ProductionResult& io_production)
       return;
 
     case E_TT_IDENTIFIER:
+      if (token().m_lexem[0] != '$')
+      {
+        readCallFunc(io_production);
+        Delimiter semicolon;
+        if (!readDelimiter(io_production, semicolon) || DELIMITER_SEMICOLON != semicolon)
+        {
+          INFO_MESSAGE_FINISHED_FAILED("CALLFUNCTION");
+        }
+        break;
+      }
       readExpression(io_production);
       if (E_SA_SUBREAD == m_state)
         return;
@@ -311,7 +321,7 @@ bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
 bool SyntaxAnalyzer::readIf(ProductionResult& io_production)
 {
   SCOPED_DEPTH_COUNTER;
-
+  Triade condition = std::make_tuple(QString(), QString(), QString());
   INFO_MESSAGE_START("if");
 
   Delimiter open_round_bracket;
@@ -326,10 +336,12 @@ bool SyntaxAnalyzer::readIf(ProductionResult& io_production)
   if (readConstExpr(io_production, constexpR))
   {
     INFO_MESSAGE_RULE_SATISFIED("CONSTEXPRESSION", constexpR);
+    std::get<2>(condition) = constexpR;
   }
   else if (readIdentifier(io_production, identifier))
   {
     INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", identifier);
+    std::get<2>(condition) = identifier;
   }
   else
   {
@@ -343,16 +355,18 @@ bool SyntaxAnalyzer::readIf(ProductionResult& io_production)
   if (readOperator(io_production, operation))
   {
     INFO_MESSAGE_RULE_SATISFIED("OPERATOR", operation);
-
+    std::get<0>(condition) = operation;
     ConstExpr constexpR;
     Identifier identifier;
     if (readConstExpr(io_production, constexpR))
     {
       INFO_MESSAGE_RULE_SATISFIED("CONSTEXPRESSION", constexpR);
+      std::get<1>(condition) = constexpR;
     }
     else if (readIdentifier(io_production, identifier))
     {
       INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", identifier);
+      std::get<1>(condition) = identifier;
     }
     else
     {
@@ -362,7 +376,7 @@ bool SyntaxAnalyzer::readIf(ProductionResult& io_production)
       return false;
     }
   }
-
+  m_triades.push_back(condition);
   Delimiter close_round_bracket;
   if (!readDelimiter(io_production, close_round_bracket) || BRACKET_ROUND_CLOSE != close_round_bracket)
   {
@@ -376,7 +390,8 @@ bool SyntaxAnalyzer::readIf(ProductionResult& io_production)
     INFO_MESSAGE_FINISHED_FAILED("if");
     return false;
   }
-
+  int then_start = m_triades.size();
+  
   readSubProduction(io_production);
 
   Delimiter close_figure_bracket;
@@ -385,7 +400,7 @@ bool SyntaxAnalyzer::readIf(ProductionResult& io_production)
     INFO_MESSAGE_FINISHED_FAILED("if");
     return false;
   }
-
+  int else_start = m_triades.size();
   Keyword keyword_else;
   if (readKeyword(io_production, keyword_else))
   {
@@ -409,6 +424,11 @@ bool SyntaxAnalyzer::readIf(ProductionResult& io_production)
     }
     prev();
   }
+  int else_finish = m_triades.size();
+
+  m_triades.insert(then_start, std::make_tuple("BRF", "(" + QString::number(else_start + 3) + ")", "(" + QString::number(then_start) + ")"));
+
+  m_triades.insert(else_start + 1, std::make_tuple("BR", "(" + QString::number(else_finish + 3) + ")", ""));
 
   INFO_MESSAGE_FINISHED_SUCCESS("if");
   return true;
@@ -496,6 +516,7 @@ bool SyntaxAnalyzer::readArgumentList(ProductionResult& io_production, ArgumentL
   bool is_empty_list = true;
   for (Argument temp; readArgument(io_production, temp);)
   {
+    io_arguments_list.push_back(temp);
     is_empty_list = false;
     Delimiter coma;
     if (readDelimiter(io_production, coma))
@@ -624,9 +645,16 @@ bool SyntaxAnalyzer::readExpression(ProductionResult& io_production)
     }
     else if (readIdentifier(io_production, identifier))
     {
-      INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", identifier);
+      if (identifier[0]!= '$' && readCallFunc(io_production))
+      {
+        INFO_MESSAGE_RULE_SATISFIED("FUNCTIONCALL", identifier);
+      }
+      else
+      {
+        INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", identifier);
+      }
       std::get<1>(triade) = identifier;
-    }
+    } 
     else
     {
       INFO_MESSAGE_DISMATCH_TOKEN("CONSTEXPRESSION");
@@ -647,6 +675,34 @@ bool SyntaxAnalyzer::readExpression(ProductionResult& io_production)
 
   INFO_MESSAGE_FINISHED_SUCCESS("EXPRESSION");
   m_triades.push_back(triade);
+  return true;
+}
+
+bool SyntaxAnalyzer::readCallFunc(ProductionResult& io_production)
+{
+  SCOPED_DEPTH_COUNTER;
+
+  INFO_MESSAGE_START("CALLFUNCTION");
+
+  Delimiter open_round_bracket;
+  if (!readDelimiter(io_production, open_round_bracket) || BRACKET_ROUND_OPEN != open_round_bracket)
+  {
+    INFO_MESSAGE_FINISHED_FAILED("CALLFUNCTION");
+    return false;
+  }
+
+  ArgumentList list;
+  readArgumentList(io_production, list);
+
+  Delimiter close_round_bracket;
+  if (!readDelimiter(io_production, close_round_bracket) || BRACKET_ROUND_CLOSE != close_round_bracket)
+  {
+    INFO_MESSAGE_FINISHED_FAILED("CALLFUNCTION");
+    return false;
+  }
+
+  INFO_MESSAGE_FINISHED_SUCCESS("CALLFUNCTION");
+
   return true;
 }
 
