@@ -168,7 +168,7 @@ void MainWindow::on_mp_analize_button_clicked()
   auto triades = syntax.triades();
   int i = 0;
   std::for_each(std::begin(triades), std::end(triades), [&](const Triade& i_triade) {
-    ui->mp_output_code_generation->appendPlainText(QString::number(++i) + " : (" + std::get<0>(i_triade) +"," + std::get<1>(i_triade) +"," + std::get<2>(i_triade) + ")");
+    ui->mp_output_code_generation->appendPlainText(QString::number(++i) + " : ( " + std::get<0>(i_triade) +", " + std::get<1>(i_triade) +", " + std::get<2>(i_triade) + " )");
   });
 
 }

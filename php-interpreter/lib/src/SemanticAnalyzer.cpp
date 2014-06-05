@@ -59,7 +59,7 @@ SemanticResult SemanticAnalysis::result()
         continue;
       }
     }
-    else if (var_to_assign.m_token_type == E_TT_IDENTIFIER)
+    else if (var_to_assign.m_token_type == E_TT_IDENTIFIER && prev()->m_lexem == "function" && next())
     {
       int arg_count = 0;
       QString var_names;
@@ -69,6 +69,7 @@ SemanticResult SemanticAnalysis::result()
         var_names += token().m_lexem + ", ";
         next();
       }
+      ++level;
 
       var_names.insert(0, QString::number(arg_count) + " function arguments: ");
       result.push_back(std::make_tuple(var_to_assign, var_names, level));

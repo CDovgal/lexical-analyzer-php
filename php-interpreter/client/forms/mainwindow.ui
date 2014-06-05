@@ -78,6 +78,8 @@ function increment($var)
 {
 return $var + 1;
 }
+
+$var2 = increment($var);
 ?&gt;</string>
           </property>
          </widget>
@@ -140,7 +142,7 @@ return $var + 1;
         <item row="0" column="0">
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>2</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -246,7 +248,13 @@ return $var + 1;
            </attribute>
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
-             <widget class="QPlainTextEdit" name="mp_output_code_generation"/>
+             <widget class="QPlainTextEdit" name="mp_output_code_generation">
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
