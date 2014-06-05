@@ -95,7 +95,7 @@ private:
 
   E_SA_STATE m_state;
   
-  TriadesContainer m_triedes;
+  TriadesContainer m_triades;
 };
 
 #define SCOPED_DEPTH_COUNTER \
