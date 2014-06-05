@@ -13,7 +13,7 @@ bool isExist(const SemanticResult& i_semantics, const QString& i_var_name)
 {
   return std::any_of(std::begin(i_semantics), std::end(i_semantics), [&] (const SemanticResultEntity& i_entity)
   {
-    return std::get<0>(i_entity).m_lexem == i_var_name && std::get<1>(i_entity) != "Variable not initialized.";
+    return std::get<0>(i_entity).m_lexem == i_var_name && std::get<1>(i_entity) != "Variable not initialized";
   });
 }
 
@@ -48,16 +48,30 @@ SemanticResult SemanticAnalysis::result()
         {
           result.push_back(std::make_tuple(var_to_assign, token().m_lexem, level));
         }
+        else
+        {
+          result.push_back(std::make_tuple(var_to_assign, "Variable not initialized", level));
+        }
       }
       else 
       {
-        result.push_back(std::make_tuple(var_to_assign, "Variable not initialized.", level));
+        result.push_back(std::make_tuple(var_to_assign, "Variable not initialized", level));
         continue;
       }
     }
     else if (var_to_assign.m_token_type == E_TT_IDENTIFIER)
     {
-      result.push_back(std::make_tuple(var_to_assign, "function", level));
+      int arg_count = 0;
+      QString var_names;
+      next();
+      for (; next()->m_token_type == E_TT_IDENTIFIER; ++arg_count)
+      {
+        var_names += token().m_lexem + ", ";
+        next();
+      }
+
+      var_names.insert(0, QString::number(arg_count) + " function arguments: ");
+      result.push_back(std::make_tuple(var_to_assign, var_names, level));
     }
   }
 
