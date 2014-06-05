@@ -37,6 +37,8 @@ public:
   SyntaxAnalyzer(const TokenSource& i_token_iter);
   
   ProductionResult readProduction();
+  
+  TriadesContainer triades() const;
 
 private:
 
@@ -93,7 +95,7 @@ private:
 
   E_SA_STATE m_state;
   
-  QVector<Triade> m_triedes;
+  TriadesContainer m_triedes;
 };
 
 #define SCOPED_DEPTH_COUNTER \
