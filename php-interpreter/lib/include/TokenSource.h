@@ -15,6 +15,7 @@
 
 typedef std::tuple<Token, QString, int> SemanticResultEntity;
 typedef QVector<SemanticResultEntity> SemanticResult;
+typedef std::tuple<Token, Token, Token> Triade;
 
 class PHP_LIB_API TokenSource
 {

@@ -92,6 +92,8 @@ private:
   bool m_hack;
 
   E_SA_STATE m_state;
+  
+  QVector<Triade> m_triedes;
 };
 
 #define SCOPED_DEPTH_COUNTER \
