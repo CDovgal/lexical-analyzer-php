@@ -259,7 +259,9 @@ bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
   }
   
   readSubProduction(io_production);
-
+  Triade triade = std::make_tuple("RETURN", "", "");
+  Triade subtriade = std::make_tuple("", "", "");
+  bool additional_triade = false;
   Keyword keyword_return;
   if (readKeyword(io_production, keyword_return) && KEYWORD_RETURN == keyword_return)
   {
@@ -273,22 +275,30 @@ bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
       if (readConstExpr(io_production, constexpR))
       {
         INFO_MESSAGE_RULE_SATISFIED("CONSTEXPRESSION", constexpR);
+        additional_triade 
+          ? std::get<1>(subtriade) += constexpR 
+          : std::get<2>(subtriade) += constexpR;
       }
       else if (readIdentifier(io_production, identifier))
       {
         INFO_MESSAGE_RULE_SATISFIED("IDENTIFIER", identifier);
+        additional_triade
+          ? std::get<1>(subtriade) += identifier
+          : std::get<2>(subtriade) += identifier;
       }
       else
       {
         INFO_MESSAGE_DISMATCH_TOKEN("CONSTEXPRESSION");
         INFO_MESSAGE_DISMATCH_TOKEN("IDENTIFIER");
       }
-
+      
       Operator operation;
       Delimiter semicolon;
       if (readOperator(io_production, operation))
       {
         INFO_MESSAGE_RULE_SATISFIED("OPERATOR", operation);
+        std::get<0>(subtriade) += operation;
+        additional_triade = true;
       }
       else if (readDelimiter(io_production, semicolon) || DELIMITER_SEMICOLON == semicolon)
       {
@@ -296,7 +306,7 @@ bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
         INFO_MESSAGE_RULE_SATISFIED("DELIMITER", ";");
         break;
       }
-      else 
+      else
       {
         INFO_MESSAGE_DISMATCH_TOKEN(";");
         INFO_MESSAGE_FINISHED_FAILED("function");
@@ -306,7 +316,16 @@ bool SyntaxAnalyzer::readFunction(ProductionResult& io_production)
       }
     }
   }
-  
+  if (additional_triade)
+  {
+    m_triades.push_back(subtriade);
+    m_triades.push_back(std::make_tuple("RETURN", "(" + QString::number(m_triades.size()) + ")", ""));
+  }
+  else
+  {
+    m_triades.push_back(std::make_tuple("RETURN", std::get<2>(subtriade), ""));
+  }
+
   Delimiter close_figure_bracket;
   if (!readDelimiter(io_production, close_figure_bracket) || BRACKET_FIGURE_CLOSE != close_figure_bracket)
   {
@@ -682,6 +701,8 @@ bool SyntaxAnalyzer::readCallFunc(ProductionResult& io_production)
 {
   SCOPED_DEPTH_COUNTER;
 
+  Triade triade = std::make_tuple("CALL", token().m_lexem, "");
+
   INFO_MESSAGE_START("CALLFUNCTION");
 
   Delimiter open_round_bracket;
@@ -700,7 +721,8 @@ bool SyntaxAnalyzer::readCallFunc(ProductionResult& io_production)
     INFO_MESSAGE_FINISHED_FAILED("CALLFUNCTION");
     return false;
   }
-
+  std::get<2>(triade) = list.join(", ");
+  m_triades.push_back(triade);
   INFO_MESSAGE_FINISHED_SUCCESS("CALLFUNCTION");
 
   return true;
