@@ -55,6 +55,9 @@
           </property>
           <property name="plainText">
            <string>&lt;?php
+for(;;)
+{
+}
 $var = 1;
 
 $a = $b;
