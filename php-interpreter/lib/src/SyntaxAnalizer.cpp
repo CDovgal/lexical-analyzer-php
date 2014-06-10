@@ -456,7 +456,7 @@ bool SyntaxAnalyzer::readIf(ProductionResult& io_production)
 bool SyntaxAnalyzer::readFor(ProductionResult& io_production)
 {
   SCOPED_DEPTH_COUNTER;
-  Triade condition = std::make_tuple(QString(), QString(), QString());
+  
   INFO_MESSAGE_START("for");
 
   Delimiter open_round_bracket;
@@ -466,24 +466,28 @@ bool SyntaxAnalyzer::readFor(ProductionResult& io_production)
     return false;
   }
   //
+  next();
+  int for_before_init = m_triades.size() + 1;
   readExpression(io_production);
-  Delimiter semicolon1;
-  if (!readDelimiter(io_production, semicolon1) || DELIMITER_SEMICOLON != semicolon1)
-  {
-    //INFO_MESSAGE_FINISHED_FAILED("for");
-    return false;
-  }
+  //Delimiter semicolon1;
+  //if (!readDelimiter(io_production, semicolon1) || DELIMITER_SEMICOLON != semicolon1)
+  //{
+  //  //INFO_MESSAGE_FINISHED_FAILED("for");
+  //  return false;
+  //}
   //
-  
+  next();
+  int for_before_condition = m_triades.size() + 1;
   readExpression(io_production);
-  Delimiter semicolon2;
-  if (!readDelimiter(io_production, semicolon2) || DELIMITER_SEMICOLON != semicolon2)
-  {
-    //INFO_MESSAGE_FINISHED_FAILED("for");
-    return false;
-  }
+  //Delimiter semicolon2;
+  //if (!readDelimiter(io_production, semicolon2) || DELIMITER_SEMICOLON != semicolon2)
+  //{
+  //  //INFO_MESSAGE_FINISHED_FAILED("for");
+  //  return false;
+  //}
   //
-  
+  next();
+  int for_before_post_action = m_triades.size() + 1;
   readExpression(io_production);
   Delimiter close_round_bracket;
   if (!readDelimiter(io_production, close_round_bracket) || BRACKET_ROUND_CLOSE != close_round_bracket)
@@ -491,23 +495,30 @@ bool SyntaxAnalyzer::readFor(ProductionResult& io_production)
     //INFO_MESSAGE_FINISHED_FAILED("for");
     return false;
   }
-
+  Triade condition = std::make_tuple(
+    "Substitute instead of: (" + QString::number(for_before_init) + ")",
+    "(" + QString::number(for_before_condition) + ")", 
+    "(" + QString::number(for_before_post_action) + ")");
   Delimiter open_figure_bracket;
   if (!readDelimiter(io_production, open_figure_bracket) || BRACKET_FIGURE_OPEN != open_figure_bracket)
   {
     //INFO_MESSAGE_FINISHED_FAILED("for");
     return false;
   }
-  
+  m_triades.push_back(condition);
+  int start_cycle = m_triades.size() + 1;
   readSubProduction(io_production);
-
+  int end_cycle = m_triades.size() + 1;
   Delimiter close_figure_bracket;
   if (!readDelimiter(io_production, close_figure_bracket) || BRACKET_FIGURE_CLOSE != close_figure_bracket)
   {
     //INFO_MESSAGE_FINISHED_FAILED("for");
     return false;
   }
-
+  Triade body = std::make_tuple("Substitute (" + QString::number(for_before_post_action + 1) + ")",
+    "(" + QString::number(start_cycle) + ")",
+    "(" + QString::number(end_cycle) + ")");
+  m_triades.push_back(body);
   INFO_MESSAGE_FINISHED_SUCCESS("for");
   return true;
 }
