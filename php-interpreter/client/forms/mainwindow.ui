@@ -55,9 +55,12 @@
           </property>
           <property name="plainText">
            <string>&lt;?php
-for(;;)
+/*
+for($a = $b;$a = $b;$a = $b;)
 {
+$a = $b;
 }
+*/
 $var = 1;
 
 $a = $b;
